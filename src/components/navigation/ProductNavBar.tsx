@@ -1,0 +1,205 @@
+import { useMemo } from 'react';
+import { Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import {
+  GlassContainer,
+  GlassView,
+  isGlassEffectAPIAvailable,
+} from 'expo-glass-effect';
+import { PRODUCT_TABS, ProductTabId } from '../../data/productNavigation';
+import { auriaGlassBorder, auriaGlassColorScheme, auriaGlassElevation, auriaGlassElevationWeb, auriaGlassTokens } from '../auria/auriaGlass';
+import { useTheme } from '../../theme';
+
+type ProductNavBarProps = {
+  activeTab: ProductTabId;
+  onTabChange: (tab: ProductTabId) => void;
+};
+
+const useNativeGlass = Platform.OS === 'ios' && isGlassEffectAPIAvailable();
+
+export const PRODUCT_NAV_BAR_HEIGHT = 64;
+/** wrap padding (6+4) + inner bar min (48) + inner vertical padding (12). */
+export const PRODUCT_NAV_FLOATING_HEIGHT = 70;
+
+function TabRail({
+  activeTab,
+  onTabChange,
+  glassActiveTab,
+}: ProductNavBarProps & { glassActiveTab?: boolean }) {
+  const { theme, setPreference, preference } = useTheme();
+  const styles = useMemo(
+    () => createStyles(theme, activeTab === 'auria'),
+    [activeTab, theme],
+  );
+
+  return (
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      contentContainerStyle={styles.scrollContent}
+    >
+      <View style={styles.railInner}>
+        {PRODUCT_TABS.map((tab) => {
+          const active = activeTab === tab.id;
+
+          const label = (
+            <Pressable
+              style={[styles.tab, active && !glassActiveTab && styles.tabActiveFallback]}
+              onPress={() => onTabChange(tab.id)}
+            >
+              <Text style={[styles.tabText, active && styles.tabTextActive]}>{tab.label}</Text>
+            </Pressable>
+          );
+
+          if (glassActiveTab && active) {
+            return (
+              <GlassView
+                key={tab.id}
+                style={styles.glassTabPill}
+                glassEffectStyle="regular"
+                isInteractive
+              >
+                {label}
+              </GlassView>
+            );
+          }
+
+          return (
+            <View key={tab.id} style={styles.tabWrap}>
+              {label}
+            </View>
+          );
+        })}
+
+        <Pressable
+          style={styles.themeToggle}
+          onPress={() => setPreference(preference === 'dark' ? 'light' : 'dark')}
+        >
+          <Text style={styles.themeToggleText}>{theme.mode === 'dark' ? '☀' : '☾'}</Text>
+        </Pressable>
+      </View>
+    </ScrollView>
+  );
+}
+
+export function ProductNavBar({ activeTab, onTabChange }: ProductNavBarProps) {
+  const { theme } = useTheme();
+  const isAuria = activeTab === 'auria';
+  const styles = useMemo(
+    () => createStyles(theme, isAuria),
+    [isAuria, theme],
+  );
+  const glass = isAuria ? auriaGlassTokens(theme.mode) : null;
+  const nativeScheme = auriaGlassColorScheme(theme.mode);
+  const navElevation = isAuria ? auriaGlassElevation(theme.mode, 'dock') : null;
+  const navElevationWeb = isAuria ? auriaGlassElevationWeb(theme.mode, 'dock') : null;
+
+  if (useNativeGlass) {
+    return (
+      <View style={[styles.wrap, navElevation, navElevationWeb]}>
+        <GlassContainer spacing={10} style={styles.glassContainer}>
+          <GlassView
+            style={styles.glassBar}
+            glassEffectStyle="regular"
+            tintColor={glass?.tintColor}
+            colorScheme={nativeScheme}
+          >
+            <TabRail activeTab={activeTab} onTabChange={onTabChange} glassActiveTab />
+          </GlassView>
+        </GlassContainer>
+      </View>
+    );
+  }
+
+  return (
+    <View style={[styles.wrap, navElevation, navElevationWeb]}>
+      <View style={styles.fallbackBar}>
+        <TabRail activeTab={activeTab} onTabChange={onTabChange} />
+      </View>
+    </View>
+  );
+}
+
+function createStyles(
+  theme: ReturnType<typeof useTheme>['theme'],
+  isAuria = false,
+) {
+  const { colors, radius, shadow } = theme;
+  const glass = isAuria ? auriaGlassTokens(theme.mode) : null;
+  const rimSubtle = isAuria ? auriaGlassBorder(theme.mode, true) : null;
+
+  return StyleSheet.create({
+    wrap: {
+      paddingHorizontal: 12,
+      paddingTop: 6,
+      paddingBottom: 4,
+    },
+    glassContainer: {
+      borderRadius: radius.panel,
+      overflow: 'hidden',
+    },
+    glassBar: {
+      borderRadius: radius.panel,
+      paddingHorizontal: 6,
+      paddingVertical: 6,
+      minHeight: PRODUCT_NAV_BAR_HEIGHT - 16,
+    },
+    fallbackBar: {
+      borderRadius: radius.panel,
+      paddingHorizontal: 4,
+      paddingVertical: 4,
+      backgroundColor: glass?.fill ?? colors.chipSurface,
+      borderWidth: 1,
+      borderColor: glass?.border ?? colors.border,
+      minHeight: PRODUCT_NAV_BAR_HEIGHT - 16,
+      ...(glass?.webBlur ?? {}),
+    },
+    scrollContent: {
+      flexGrow: 1,
+      alignItems: 'center',
+    },
+    railInner: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 2,
+      paddingHorizontal: 2,
+    },
+    tabWrap: {
+      borderRadius: radius.pill,
+    },
+    glassTabPill: {
+      borderRadius: radius.pill,
+      overflow: 'hidden',
+    },
+    tab: {
+      paddingHorizontal: 13,
+      paddingVertical: 9,
+      borderRadius: radius.pill,
+    },
+    tabActiveFallback: {
+      backgroundColor: glass?.fillStrong ?? colors.navActiveSurface,
+      ...(glass ? rimSubtle : shadow.navActive),
+    },
+    tabText: {
+      fontSize: 13,
+      fontWeight: '500',
+      color: colors.textSecondary,
+    },
+    tabTextActive: {
+      fontWeight: '600',
+      color: colors.text,
+    },
+    themeToggle: {
+      marginLeft: 4,
+      width: 34,
+      height: 34,
+      borderRadius: 17,
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: glass?.fill ?? colors.input,
+      ...(rimSubtle ?? {}),
+    },
+    themeToggleText: {
+      fontSize: 15,
+    },
+  });
+}

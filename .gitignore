@@ -5,6 +5,7 @@ node_modules/
 
 # Expo
 .expo/
+.expo-tmp-*/
 dist/
 web-build/
 expo-env.d.ts
@@ -39,3 +40,7 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+
+# Local reference projects and device connection notes
+/web-reference/
+/CONNECT_PHONE.txt

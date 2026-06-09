@@ -140,7 +140,6 @@ export function AuriaCreateMenu({ visible, onClose, onSendRequest }: AuriaCreate
           accessibilityLabel="Close create menu"
         />
         <LiquidGlassSurface
-          strong
           elevated={false}
           borderRadius={theme.radius.panel}
           style={styles.sheet}
@@ -343,7 +342,7 @@ function createStyles(theme: ReturnType<typeof useTheme>['theme']) {
     },
     backdrop: {
       ...StyleSheet.absoluteFillObject,
-      backgroundColor: theme.colors.offBlackOverlay,
+      backgroundColor: 'transparent',
       zIndex: 0,
     },
     sheet: {

@@ -50,7 +50,6 @@ export function AuriaScreen() {
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [createMenuOpen, setCreateMenuOpen] = useState(false);
-  const [createMenuBottom, setCreateMenuBottom] = useState(180);
   const slideProgress = useRef(new Animated.Value(0)).current;
   const [panelKey, setPanelKey] = useState(0);
   const panelAnim = useRef(new Animated.Value(1)).current;
@@ -170,11 +169,8 @@ export function AuriaScreen() {
     workspace.openProjectModal();
   };
 
-  const openCreateMenu = (anchorTop?: number) => {
+  const openCreateMenu = () => {
     dismissKeyboard();
-    if (anchorTop !== undefined) {
-      setCreateMenuBottom(Math.max(0, screenHeight - anchorTop + 10));
-    }
     setCreateMenuOpen(true);
   };
 
@@ -300,7 +296,7 @@ export function AuriaScreen() {
         visible={createMenuOpen}
         onClose={() => setCreateMenuOpen(false)}
         onSendRequest={handleCreateRequest}
-        popoverBottom={createMenuBottom}
+        bottomOffset={composerOverlayHeight + 10}
       />
     </View>
   );

@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from 'react';
 import * as DocumentPicker from 'expo-document-picker';
 import {
   KeyboardAvoidingView,
-  Modal,
   Platform,
   Pressable,
   ScrollView,
@@ -23,7 +22,7 @@ type AuriaCreateMenuProps = {
   visible: boolean;
   onClose: () => void;
   onSendRequest: (request: string) => void;
-  popoverBottom: number;
+  bottomOffset: number;
 };
 
 const ACTIONS: Array<{
@@ -66,12 +65,12 @@ export function AuriaCreateMenu({
   visible,
   onClose,
   onSendRequest,
-  popoverBottom,
+  bottomOffset,
 }: AuriaCreateMenuProps) {
   const { theme } = useTheme();
   const styles = useMemo(
-    () => createStyles(theme, popoverBottom),
-    [popoverBottom, theme],
+    () => createStyles(theme, bottomOffset),
+    [bottomOffset, theme],
   );
   const [mode, setMode] = useState<CreateMode>('home');
   const [prompt, setPrompt] = useState('');
@@ -243,36 +242,31 @@ export function AuriaCreateMenu({
     </>
   );
 
+  if (!visible) return null;
+
   return (
-    <Modal
-      visible={visible}
-      transparent
-      animationType="fade"
-      presentationStyle="overFullScreen"
-      onRequestClose={onClose}
+    <KeyboardAvoidingView
+      style={styles.overlay}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      pointerEvents="box-none"
     >
-      <KeyboardAvoidingView
-        style={styles.overlay}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      >
-        <Pressable
-          style={styles.backdrop}
-          onPress={onClose}
-          accessibilityRole="button"
-          accessibilityLabel="Close create menu"
-        />
-        <View style={styles.sheetPosition}>
-          <LiquidGlassSurface
-            strong
-            elevationLevel="modal"
-            borderRadius={theme.radius.panel}
-            style={styles.sheet}
-          >
-            {menuBody}
-          </LiquidGlassSurface>
-        </View>
-      </KeyboardAvoidingView>
-    </Modal>
+      <Pressable
+        style={styles.backdrop}
+        onPress={onClose}
+        accessibilityRole="button"
+        accessibilityLabel="Close create menu"
+      />
+      <View style={styles.sheetPosition}>
+        <LiquidGlassSurface
+          strong
+          elevationLevel="modal"
+          borderRadius={theme.radius.panel}
+          style={styles.sheet}
+        >
+          {menuBody}
+        </LiquidGlassSurface>
+      </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -314,16 +308,17 @@ function OptionSection<T extends string>({
 
 function createStyles(
   theme: ReturnType<typeof useTheme>['theme'],
-  popoverBottom = 180,
+  bottomOffset = 90,
 ) {
   const glass = liquidGlassTokens(theme);
   return StyleSheet.create({
     overlay: {
-      flex: 1,
+      ...StyleSheet.absoluteFillObject,
       justifyContent: 'flex-end',
       alignItems: 'flex-start',
       paddingHorizontal: 18,
-      paddingBottom: popoverBottom,
+      paddingBottom: bottomOffset,
+      zIndex: 20,
     },
     backdrop: {
       ...StyleSheet.absoluteFillObject,

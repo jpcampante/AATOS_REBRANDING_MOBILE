@@ -42,6 +42,11 @@ const inputWebFocusReset =
         outlineWidth: 0,
         outlineStyle: 'none',
         boxShadow: 'none',
+        height: AURIA_COMPOSER_TOOLBAR_HEIGHT,
+        minHeight: AURIA_COMPOSER_TOOLBAR_HEIGHT,
+        paddingTop: 11,
+        paddingBottom: 11,
+        boxSizing: 'border-box',
       } as object)
     : null;
 

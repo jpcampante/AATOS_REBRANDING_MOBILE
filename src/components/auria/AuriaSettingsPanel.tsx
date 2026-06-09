@@ -1,6 +1,6 @@
-import { useMemo, useState } from 'react';
-import { Pressable, StyleSheet, Switch, Text, View } from 'react-native';
-import { auriaTypography, useTheme } from '../../theme';
+import { useEffect, useMemo, useState } from 'react';
+import { AccessibilityInfo, Platform, Pressable, StyleSheet, Switch, Text, View } from 'react-native';
+import { auriaTypography, isNativeLiquidGlassAvailable, useTheme } from '../../theme';
 import { AuriaIcon, AURIA_ICON_SIZE } from '../icons';
 import { AuriaPanelScroll } from './AuriaPanelShared';
 
@@ -10,6 +10,13 @@ export function AuriaSettingsPanel() {
   const [notifications, setNotifications] = useState(true);
   const [memory, setMemory] = useState(true);
   const [activity, setActivity] = useState(false);
+  const [reduceTransparency, setReduceTransparency] = useState(false);
+  const nativeGlass = isNativeLiquidGlassAvailable();
+
+  useEffect(() => {
+    if (Platform.OS !== 'ios') return;
+    void AccessibilityInfo.isReduceTransparencyEnabled().then(setReduceTransparency);
+  }, []);
 
   return (
     <AuriaPanelScroll>
@@ -48,6 +55,26 @@ export function AuriaSettingsPanel() {
               </Pressable>
             );
           })}
+        </View>
+      </SettingsSection>
+
+      <SettingsSection title="Apple Liquid Glass">
+        <View style={styles.settingRow}>
+          <View style={styles.copy}>
+            <Text style={styles.rowTitle}>
+              {nativeGlass && !reduceTransparency ? 'Native effect active' : 'Fallback effect active'}
+            </Text>
+            <Text style={styles.rowDescription}>
+              {Platform.OS !== 'ios'
+                ? 'Native Liquid Glass is only available on iOS 26 or later.'
+                : reduceTransparency
+                  ? 'Disable Reduce Transparency in iOS Accessibility settings.'
+                  : nativeGlass
+                    ? 'Auria controls are using Apple native interactive glass.'
+                    : 'This Expo runtime does not expose the Apple Liquid Glass API.'}
+            </Text>
+          </View>
+          <View style={[styles.statusDot, nativeGlass && !reduceTransparency && styles.statusDotActive]} />
         </View>
       </SettingsSection>
 
@@ -149,5 +176,7 @@ function createStyles(theme: ReturnType<typeof useTheme>['theme']) {
     themeOptionActive: { backgroundColor: theme.colors.offBlack, borderColor: theme.colors.offBlack },
     themeOptionText: { ...auriaTypography.body, fontSize: 12, color: theme.colors.textSecondary },
     themeOptionTextActive: { color: theme.colors.surface, fontWeight: theme.typography.fontWeight.semibold },
+    statusDot: { width: 10, height: 10, borderRadius: 5, backgroundColor: theme.colors.textHint },
+    statusDotActive: { backgroundColor: theme.colors.success },
   });
 }

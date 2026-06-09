@@ -1,9 +1,8 @@
 import { useMemo } from 'react';
-import { Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import {
   GlassContainer,
   GlassView,
-  isGlassEffectAPIAvailable,
 } from 'expo-glass-effect';
 import { LiquidGlassSurface } from '../ui/LiquidGlassSurface';
 import { PRODUCT_TABS, ProductTabId } from '../../data/productNavigation';
@@ -11,6 +10,7 @@ import {
   liquidGlassBorder,
   liquidGlassColorScheme,
   liquidGlassTokens,
+  isNativeLiquidGlassAvailable,
   useTheme,
 } from '../../theme';
 
@@ -18,8 +18,6 @@ type ProductNavBarProps = {
   activeTab: ProductTabId;
   onTabChange: (tab: ProductTabId) => void;
 };
-
-const useNativeGlass = Platform.OS === 'ios' && isGlassEffectAPIAvailable();
 
 export const PRODUCT_NAV_BAR_HEIGHT = 64;
 /** wrap padding (6+4) + inner bar min (48) + inner vertical padding (12). */
@@ -100,7 +98,7 @@ export function ProductNavBar({ activeTab, onTabChange }: ProductNavBarProps) {
   const glass = isAuria ? liquidGlassTokens(theme) : null;
   const nativeScheme = liquidGlassColorScheme(theme);
 
-  if (useNativeGlass) {
+  if (isNativeLiquidGlassAvailable()) {
     return (
       <View style={styles.wrap}>
         <GlassContainer spacing={10} style={styles.glassContainer}>

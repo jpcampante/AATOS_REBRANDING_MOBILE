@@ -77,7 +77,7 @@ export function LiquidGlassSurface({
   const colorScheme = liquidGlassColorScheme(theme);
   const useNativeGlass = isNativeLiquidGlassAvailable();
   const useInteractiveGlass = interactive || variant === 'input';
-  const nativeGlassStyle = variant === 'input' ? 'clear' : 'regular';
+  const nativeGlassStyle = useInteractiveGlass ? 'clear' : 'regular';
 
   const fallbackStyle = useMemo(() => {
     if (variant === 'input') {
@@ -101,10 +101,9 @@ export function LiquidGlassSurface({
 
   const nativeGlassBody = (
     <GlassView
-      style={[fallbackStyle, style, { borderWidth: 0, backgroundColor: 'transparent' }]}
+      style={[{ borderRadius: radius, backgroundColor: 'transparent' }, style]}
       glassEffectStyle={nativeGlassStyle}
       isInteractive={useInteractiveGlass}
-      tintColor={glass.tintColor}
       colorScheme={colorScheme}
     >
       {children}
@@ -113,7 +112,7 @@ export function LiquidGlassSurface({
 
   const body = useNativeGlass ? (
     grouped ? (
-      <GlassContainer spacing={groupSpacing} style={{ borderRadius: radius, overflow: 'hidden' }}>
+      <GlassContainer spacing={groupSpacing} style={{ borderRadius: radius }}>
         {nativeGlassBody}
       </GlassContainer>
     ) : (

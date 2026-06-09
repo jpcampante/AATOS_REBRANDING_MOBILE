@@ -1,8 +1,9 @@
 import { useMemo } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { AuriaIcon, AURIA_ICON_SIZE, AURIA_ICON_STROKE_NAV } from '../icons';
-import { liquidGlassTokens, useTheme } from '../../theme';
+import { useTheme } from '../../theme';
 import { AuriaDrawerToggle } from './AuriaDrawerToggle';
+import { AuriaGlassButton } from './AuriaGlassButton';
 
 /** Fixed workspace bar — keep in sync with AuriaScreen top inset. */
 export const WORKSPACE_HEADER_HEIGHT = 54;
@@ -23,11 +24,13 @@ export function AuriaWorkspaceHeader({ onToggleSidebar, onNewChat }: AuriaWorksp
       </View>
 
       <View style={styles.sideRail}>
-        <Pressable
-          style={({ pressed }) => [styles.sideSlot, pressed && styles.sideSlotPressed]}
+        <AuriaGlassButton
           onPress={onNewChat}
           accessibilityLabel="New chat"
           hitSlop={8}
+          elevated={false}
+          borderRadius={theme.radius.md}
+          surfaceStyle={styles.sideSlot}
         >
           <AuriaIcon
             name="squarePen"
@@ -35,7 +38,7 @@ export function AuriaWorkspaceHeader({ onToggleSidebar, onNewChat }: AuriaWorksp
             color={ds.gray700}
             strokeWidth={AURIA_ICON_STROKE_NAV}
           />
-        </Pressable>
+        </AuriaGlassButton>
       </View>
     </View>
   );
@@ -65,9 +68,6 @@ function createStyles(
       alignItems: 'center',
       justifyContent: 'center',
       borderRadius: theme.radius.md,
-    },
-    sideSlotPressed: {
-      backgroundColor: liquidGlassTokens(theme).pressed,
     },
   });
 }

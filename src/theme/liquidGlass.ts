@@ -1,6 +1,6 @@
 import { Platform, ViewStyle } from 'react-native';
 import type { GlassColorScheme } from 'expo-glass-effect';
-import { isGlassEffectAPIAvailable } from 'expo-glass-effect';
+import { isGlassEffectAPIAvailable, isLiquidGlassAvailable } from 'expo-glass-effect';
 import type { AatosTheme } from './aatosTheme';
 
 export type LiquidGlassElevation = 'dock' | 'input' | 'card' | 'modal';
@@ -18,7 +18,7 @@ export type LiquidGlassTokens = {
 };
 
 export function isNativeLiquidGlassAvailable(): boolean {
-  return Platform.OS === 'ios' && isGlassEffectAPIAvailable();
+  return Platform.OS === 'ios' && isGlassEffectAPIAvailable() && isLiquidGlassAvailable();
 }
 
 export function liquidGlassColorScheme(theme: AatosTheme): GlassColorScheme {

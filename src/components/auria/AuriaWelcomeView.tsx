@@ -135,6 +135,7 @@ export function AuriaWelcomeView({
                   <LiquidGlassSurface
                     borderRadius={22}
                     elevationLevel="card"
+                    interactive
                     style={styles.suggestionPill}
                   >
                     <Text style={styles.suggestionText}>{suggestion}</Text>

@@ -19,6 +19,7 @@ import {
   AuriaNewsPanel,
   AuriaProjectsPanel,
   AuriaSearchPanel,
+  AuriaSettingsPanel,
 } from '../components/auria/AuriaPanels';
 import {
   getAuriaComposerOverlayHeight,
@@ -213,6 +214,7 @@ export function AuriaScreen() {
     if (workspace.panel === 'news') return <AuriaNewsPanel />;
     if (workspace.panel === 'gallery') return <AuriaGalleryPanel />;
     if (workspace.panel === 'search') return <AuriaSearchPanel />;
+    if (workspace.panel === 'settings') return <AuriaSettingsPanel />;
     if (workspace.panel === 'projects') {
       return (
         <AuriaProjectsPanel

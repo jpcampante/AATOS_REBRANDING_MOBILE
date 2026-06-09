@@ -21,7 +21,7 @@ export const auriaSidebarTopItems = [
   { id: 'more' as const, label: 'More', icon: 'moreHorizontal' as const },
 ];
 
-export type AuriaPanel = 'chat' | 'news' | 'gallery' | 'search' | 'projects';
+export type AuriaPanel = 'chat' | 'news' | 'gallery' | 'search' | 'projects' | 'settings';
 export type AuriaProjectVisibility = 'Team' | 'Shared';
 
 export type AuriaProject = {

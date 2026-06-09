@@ -81,22 +81,22 @@ export function liquidGlassElevation(
   const presets =
     theme.mode === 'dark'
       ? {
-          dock: { shadowOpacity: 0.34, shadowRadius: 20, shadowOffset: { width: 0, height: 10 } },
-          input: { shadowOpacity: 0.26, shadowRadius: 12, shadowOffset: { width: 0, height: 6 } },
-          card: { shadowOpacity: 0.3, shadowRadius: 16, shadowOffset: { width: 0, height: 8 } },
-          modal: { shadowOpacity: 0.42, shadowRadius: 28, shadowOffset: { width: 0, height: 14 } },
+          dock: { shadowOpacity: 0.24, shadowRadius: 12, shadowOffset: { width: 0, height: 5 } },
+          input: { shadowOpacity: 0.2, shadowRadius: 8, shadowOffset: { width: 0, height: 3 } },
+          card: { shadowOpacity: 0.18, shadowRadius: 8, shadowOffset: { width: 0, height: 3 } },
+          modal: { shadowOpacity: 0.3, shadowRadius: 18, shadowOffset: { width: 0, height: 8 } },
         }
       : {
-          dock: { shadowOpacity: 0.13, shadowRadius: 22, shadowOffset: { width: 0, height: 10 } },
-          input: { shadowOpacity: 0.1, shadowRadius: 14, shadowOffset: { width: 0, height: 6 } },
-          card: { shadowOpacity: 0.08, shadowRadius: 14, shadowOffset: { width: 0, height: 6 } },
-          modal: { shadowOpacity: 0.18, shadowRadius: 32, shadowOffset: { width: 0, height: 16 } },
+          dock: { shadowOpacity: 0.08, shadowRadius: 10, shadowOffset: { width: 0, height: 4 } },
+          input: { shadowOpacity: 0.06, shadowRadius: 7, shadowOffset: { width: 0, height: 2 } },
+          card: { shadowOpacity: 0.045, shadowRadius: 6, shadowOffset: { width: 0, height: 2 } },
+          modal: { shadowOpacity: 0.12, shadowRadius: 18, shadowOffset: { width: 0, height: 8 } },
         };
 
   return {
     shadowColor: theme.mode === 'dark' ? '#000000' : theme.colors.offBlack,
     ...presets[level],
-    elevation: level === 'modal' ? 14 : level === 'dock' ? 10 : 6,
+    elevation: level === 'modal' ? 8 : level === 'dock' ? 5 : 3,
   };
 }
 

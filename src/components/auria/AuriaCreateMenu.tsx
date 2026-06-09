@@ -14,7 +14,6 @@ import {
 import { auriaTypography, liquidGlassTokens, useTheme } from '../../theme';
 import { AuriaIcon, AuriaIconName, AURIA_ICON_SIZE } from '../icons';
 import { LiquidGlassSurface } from '../ui/LiquidGlassSurface';
-import { AURIA_COMPOSER_OVERLAY_BASE_HEIGHT } from './auriaLayout';
 
 type CreateMode = 'home' | 'document' | 'image' | 'teammate';
 type DocumentType = 'Document' | 'Presentation' | 'Spreadsheet' | 'Report';
@@ -24,6 +23,7 @@ type AuriaCreateMenuProps = {
   visible: boolean;
   onClose: () => void;
   onSendRequest: (request: string) => void;
+  popoverBottom: number;
 };
 
 const ACTIONS: Array<{
@@ -62,9 +62,17 @@ const TEAMMATES = [
   { name: 'Sofia Martins', role: 'Legal AI', context: 'Contracts, policies, and compliance' },
 ] as const;
 
-export function AuriaCreateMenu({ visible, onClose, onSendRequest }: AuriaCreateMenuProps) {
+export function AuriaCreateMenu({
+  visible,
+  onClose,
+  onSendRequest,
+  popoverBottom,
+}: AuriaCreateMenuProps) {
   const { theme } = useTheme();
-  const styles = useMemo(() => createStyles(theme), [theme]);
+  const styles = useMemo(
+    () => createStyles(theme, popoverBottom),
+    [popoverBottom, theme],
+  );
   const [mode, setMode] = useState<CreateMode>('home');
   const [prompt, setPrompt] = useState('');
   const [documentType, setDocumentType] = useState<DocumentType>('Document');
@@ -304,7 +312,10 @@ function OptionSection<T extends string>({
   );
 }
 
-function createStyles(theme: ReturnType<typeof useTheme>['theme']) {
+function createStyles(
+  theme: ReturnType<typeof useTheme>['theme'],
+  popoverBottom = 180,
+) {
   const glass = liquidGlassTokens(theme);
   return StyleSheet.create({
     overlay: {
@@ -312,7 +323,7 @@ function createStyles(theme: ReturnType<typeof useTheme>['theme']) {
       justifyContent: 'flex-end',
       alignItems: 'flex-start',
       paddingHorizontal: 18,
-      paddingBottom: AURIA_COMPOSER_OVERLAY_BASE_HEIGHT + 72,
+      paddingBottom: popoverBottom,
     },
     backdrop: {
       ...StyleSheet.absoluteFillObject,

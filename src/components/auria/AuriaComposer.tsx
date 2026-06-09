@@ -33,7 +33,7 @@ type AuriaComposerProps = {
   value?: string;
   onChangeText?: (text: string) => void;
   onSend?: () => void;
-  onAttach?: () => void;
+  onAttach?: (anchorTop?: number) => void;
   bottomInset?: number;
 };
 
@@ -58,6 +58,7 @@ export const AuriaComposer = forwardRef<AuriaComposerHandle, AuriaComposerProps>
   ) {
     const [draft, setDraft] = useState('');
     const inputRef = useRef<TextInput>(null);
+    const attachRef = useRef<View>(null);
     const { ds, theme } = useTheme();
     const styles = useMemo(() => createStyles(ds, theme), [ds, theme]);
 
@@ -82,6 +83,14 @@ export const AuriaComposer = forwardRef<AuriaComposerHandle, AuriaComposerProps>
       onSend?.();
     };
 
+    const handleAttach = () => {
+      if (!attachRef.current) {
+        onAttach?.();
+        return;
+      }
+      attachRef.current.measureInWindow((_x, y) => onAttach?.(y));
+    };
+
     const shellPaddingTop = AURIA_COMPOSER_CONTENT_GAP + AURIA_COMPOSER_DOCK_PADDING_V;
     const shellStyle = {
       paddingTop: shellPaddingTop,
@@ -97,7 +106,8 @@ export const AuriaComposer = forwardRef<AuriaComposerHandle, AuriaComposerProps>
         style={styles.toolbarGlass}
       >
         <Pressable
-          onPress={onAttach}
+          ref={attachRef}
+          onPress={handleAttach}
           accessibilityRole="button"
           accessibilityLabel="Open create menu"
           hitSlop={6}

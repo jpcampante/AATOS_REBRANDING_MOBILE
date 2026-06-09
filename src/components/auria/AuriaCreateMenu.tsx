@@ -316,7 +316,7 @@ function createStyles(
       ...StyleSheet.absoluteFillObject,
       justifyContent: 'flex-end',
       alignItems: 'flex-start',
-      paddingHorizontal: 18,
+      paddingHorizontal: 16,
       paddingBottom: bottomOffset,
       zIndex: 20,
     },
@@ -326,8 +326,8 @@ function createStyles(
       zIndex: 0,
     },
     sheetPosition: {
-      width: '88%',
-      maxWidth: 340,
+      width: 320,
+      maxWidth: '88%',
       maxHeight: '64%',
     },
     sheet: {

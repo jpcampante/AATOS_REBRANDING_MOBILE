@@ -3,6 +3,7 @@ import {
   Animated,
   Easing,
   Keyboard,
+  LayoutChangeEvent,
   Platform,
   Pressable,
   StyleSheet,
@@ -50,6 +51,9 @@ export function AuriaScreen() {
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [createMenuOpen, setCreateMenuOpen] = useState(false);
+  const [composerHeight, setComposerHeight] = useState(
+    getAuriaComposerOverlayHeight(),
+  );
   const slideProgress = useRef(new Animated.Value(0)).current;
   const [panelKey, setPanelKey] = useState(0);
   const panelAnim = useRef(new Animated.Value(1)).current;
@@ -174,6 +178,11 @@ export function AuriaScreen() {
     setCreateMenuOpen(true);
   };
 
+  const handleComposerLayout = (event: LayoutChangeEvent) => {
+    const nextHeight = Math.round(event.nativeEvent.layout.height);
+    setComposerHeight((current) => (current === nextHeight ? current : nextHeight));
+  };
+
   const handleCreateRequest = (request: string) => {
     workspace.sendMessage(request);
     setPanelKey((key) => key + 1);
@@ -272,7 +281,7 @@ export function AuriaScreen() {
             </Pressable>
 
             {workspace.showComposer ? (
-              <View style={styles.composerOverlay}>
+              <View style={styles.composerOverlay} onLayout={handleComposerLayout}>
                 <AuriaComposer
                   ref={composerRef}
                   value={workspace.composerText}
@@ -283,6 +292,13 @@ export function AuriaScreen() {
                 />
               </View>
             ) : null}
+
+            <AuriaCreateMenu
+              visible={createMenuOpen}
+              onClose={() => setCreateMenuOpen(false)}
+              onSendRequest={handleCreateRequest}
+              bottomOffset={composerHeight + 8}
+            />
           </View>
         </View>
       </Animated.View>
@@ -291,12 +307,6 @@ export function AuriaScreen() {
         visible={workspace.newProjectOpen}
         onClose={workspace.closeProjectModal}
         onCreate={handleCreateProject}
-      />
-      <AuriaCreateMenu
-        visible={createMenuOpen}
-        onClose={() => setCreateMenuOpen(false)}
-        onSendRequest={handleCreateRequest}
-        bottomOffset={composerOverlayHeight + 10}
       />
     </View>
   );

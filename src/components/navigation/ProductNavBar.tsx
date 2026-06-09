@@ -5,6 +5,7 @@ import {
   GlassView,
   isGlassEffectAPIAvailable,
 } from 'expo-glass-effect';
+import { LiquidGlassSurface } from '../ui/LiquidGlassSurface';
 import { PRODUCT_TABS, ProductTabId } from '../../data/productNavigation';
 import {
   liquidGlassBorder,
@@ -118,9 +119,13 @@ export function ProductNavBar({ activeTab, onTabChange }: ProductNavBarProps) {
 
   return (
     <View style={styles.wrap}>
-      <View style={styles.fallbackBar}>
+      <LiquidGlassSurface
+        elevated={false}
+        borderRadius={theme.radius.panel}
+        style={styles.fallbackBar}
+      >
         <TabRail activeTab={activeTab} onTabChange={onTabChange} />
-      </View>
+      </LiquidGlassSurface>
     </View>
   );
 }
@@ -153,11 +158,7 @@ function createStyles(
       borderRadius: radius.panel,
       paddingHorizontal: 4,
       paddingVertical: 4,
-      backgroundColor: glass?.fill ?? colors.chipSurface,
-      borderWidth: 1,
-      borderColor: glass?.border ?? colors.border,
       minHeight: PRODUCT_NAV_BAR_HEIGHT - 16,
-      ...(glass?.webBlur ?? {}),
     },
     scrollContent: {
       flexGrow: 1,

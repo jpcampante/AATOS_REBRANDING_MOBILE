@@ -4,15 +4,13 @@ import { auriaWelcomeName, auriaWelcomeSuggestionPool } from '../../data/auriaMo
 import { AURIA_CONTENT_HORIZONTAL_INSET } from './auriaLayout';
 import { AnimatedScreenBlock } from '../navigation/AnimatedScreenBlock';
 import {
-  liquidGlassBorder,
-  liquidGlassElevation,
-  liquidGlassElevationWeb,
-  liquidGlassTokens,
   auriaTypography,
+  liquidGlassTokens,
   useTheme,
 } from '../../theme';
 import { AuriaLogoMark } from './AuriaLogoMark';
 import { AuriaRefreshButton } from './AuriaRefreshButton';
+import { LiquidGlassSurface } from '../ui/LiquidGlassSurface';
 
 const USE_NATIVE_DRIVER = Platform.OS !== 'web';
 
@@ -130,11 +128,17 @@ export function AuriaWelcomeView({
               {suggestions.map((suggestion) => (
                 <Pressable
                   key={`${refreshKey}-${suggestion}`}
-                  style={({ pressed }) => [styles.suggestionPill, pressed && styles.suggestionPillPressed]}
+                  style={({ pressed }) => [styles.suggestionPressable, pressed && styles.suggestionPillPressed]}
                   onPress={() => onSuggestion(suggestion)}
                   accessibilityRole="button"
                 >
-                  <Text style={styles.suggestionText}>{suggestion}</Text>
+                  <LiquidGlassSurface
+                    borderRadius={22}
+                    elevationLevel="card"
+                    style={styles.suggestionPill}
+                  >
+                    <Text style={styles.suggestionText}>{suggestion}</Text>
+                  </LiquidGlassSurface>
                 </Pressable>
               ))}
             </Animated.View>
@@ -161,8 +165,6 @@ function createStyles(
 ) {
   const column = contentMaxWidth ? { maxWidth: contentMaxWidth, width: '100%' as const } : { width: '100%' as const };
   const glass = liquidGlassTokens(theme);
-  const rim = liquidGlassBorder(theme);
-
   return StyleSheet.create({
     wrap: {
       flex: 1,
@@ -213,16 +215,14 @@ function createStyles(
       gap: 10,
       alignItems: 'stretch',
     },
-    suggestionPill: {
+    suggestionPressable: {
       width: '100%',
+      borderRadius: 22,
+    },
+    suggestionPill: {
       paddingHorizontal: 18,
       paddingVertical: 15,
       borderRadius: 22,
-      backgroundColor: glass.fill,
-      ...rim,
-      ...glass.webBlur,
-      ...liquidGlassElevation(theme, 'card'),
-      ...liquidGlassElevationWeb(theme, 'card'),
       alignItems: 'center',
       justifyContent: 'center',
     },

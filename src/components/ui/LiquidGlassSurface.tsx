@@ -1,4 +1,4 @@
-import { ReactNode, useMemo } from 'react';
+import { createElement, ReactNode, useMemo } from 'react';
 import { Platform, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import { GlassContainer, GlassView } from 'expo-glass-effect';
 import {
@@ -26,6 +26,25 @@ type LiquidGlassSurfaceProps = {
   grouped?: boolean;
   groupSpacing?: number;
 };
+
+function toWebStyle(style: StyleProp<ViewStyle>) {
+  const flattened = { ...StyleSheet.flatten(style) } as Record<string, unknown>;
+  const horizontal = flattened.paddingHorizontal;
+  const vertical = flattened.paddingVertical;
+
+  if (horizontal !== undefined) {
+    flattened.paddingLeft = horizontal;
+    flattened.paddingRight = horizontal;
+    delete flattened.paddingHorizontal;
+  }
+  if (vertical !== undefined) {
+    flattened.paddingTop = vertical;
+    flattened.paddingBottom = vertical;
+    delete flattened.paddingVertical;
+  }
+
+  return flattened;
+}
 
 export function LiquidGlassSurface({
   children,
@@ -100,6 +119,18 @@ export function LiquidGlassSurface({
     ) : (
       nativeGlassBody
     )
+  ) : Platform.OS === 'web' ? (
+    createElement(
+      'div',
+      {
+        style: {
+          ...toWebStyle(fallbackStyle),
+          borderStyle: 'solid',
+          ...toWebStyle(style),
+        },
+      },
+      children,
+    )
   ) : (
     <View style={[fallbackStyle, style]}>{children}</View>
   );
@@ -108,7 +139,11 @@ export function LiquidGlassSurface({
     return body;
   }
 
-  return <View style={[styles.elevationWrap, elevation, elevationWeb]}>{body}</View>;
+  return (
+    <View style={[styles.elevationWrap, { borderRadius: radius }, elevation, elevationWeb]}>
+      {body}
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({

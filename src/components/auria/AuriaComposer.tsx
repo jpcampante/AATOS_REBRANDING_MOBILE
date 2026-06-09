@@ -7,6 +7,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import { LiquidGlassSurface } from '../ui/LiquidGlassSurface';
 import { AuriaIcon, AURIA_ICON_SIZE, AURIA_ICON_STROKE_SEND, AURIA_ICON_STROKE_STRONG } from '../icons';
 import { auriaTypography, liquidGlassTokens, useTheme } from '../../theme';
 import {
@@ -137,7 +138,14 @@ export const AuriaComposer = forwardRef<AuriaComposerHandle, AuriaComposerProps>
           />
         </Pressable>
 
-        <View style={styles.inputGlass}>{inputField}</View>
+        <LiquidGlassSurface
+          variant="input"
+          elevated={false}
+          borderRadius={AURIA_COMPOSER_TOOLBAR_HEIGHT / 2}
+          style={styles.inputGlass}
+        >
+          {inputField}
+        </LiquidGlassSurface>
 
         <Pressable
           style={({ pressed }) => [
@@ -209,9 +217,6 @@ function createStyles(
       justifyContent: 'center',
       borderRadius: AURIA_COMPOSER_TOOLBAR_HEIGHT / 2,
       overflow: 'hidden',
-      backgroundColor: glass.inputFill,
-      borderWidth: 1,
-      borderColor: glass.borderSubtle,
     },
     inputPill: {
       flex: 1,

@@ -82,7 +82,7 @@ export function liquidGlassElevation(
           dock: { shadowOpacity: 0.1, shadowRadius: 16, shadowOffset: { width: 0, height: 7 } },
           input: { shadowOpacity: 0.07, shadowRadius: 8, shadowOffset: { width: 0, height: 3 } },
           card: { shadowOpacity: 0.07, shadowRadius: 10, shadowOffset: { width: 0, height: 4 } },
-          modal: { shadowOpacity: 0.18, shadowRadius: 26, shadowOffset: { width: 0, height: 12 } },
+          modal: { shadowOpacity: 0.32, shadowRadius: 28, shadowOffset: { width: 0, height: 14 } },
         };
 
   return {
@@ -102,7 +102,7 @@ export function liquidGlassElevationWeb(
     dock: '0 7px 24px rgba(37, 43, 47, 0.1), 0 2px 7px rgba(37, 43, 47, 0.06)',
     input: '0 3px 12px rgba(37, 43, 47, 0.07), 0 1px 3px rgba(37, 43, 47, 0.04)',
     card: '0 4px 16px rgba(37, 43, 47, 0.07), 0 1px 5px rgba(37, 43, 47, 0.05)',
-    modal: '0 16px 44px rgba(37, 43, 47, 0.18), 0 4px 14px rgba(37, 43, 47, 0.1)',
+    modal: '0 18px 52px rgba(0, 0, 0, 0.34), 0 6px 18px rgba(0, 0, 0, 0.2)',
   } as const;
   const dark = {
     dock: '0 10px 32px rgba(0, 0, 0, 0.34), 0 2px 10px rgba(0, 0, 0, 0.22)',

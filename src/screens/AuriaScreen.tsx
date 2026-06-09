@@ -233,7 +233,7 @@ export function AuriaScreen() {
       );
     }
 
-    return <AuriaChatView messages={workspace.messages} />;
+    return <AuriaChatView messages={workspace.messages} isResponding={workspace.isResponding} />;
   };
 
   return (
@@ -289,6 +289,7 @@ export function AuriaScreen() {
                   onSend={handleSend}
                   onAttach={openCreateMenu}
                   bottomInset={keyboardInset}
+                  isResponding={workspace.isResponding}
                 />
               </View>
             ) : null}

@@ -1,23 +1,28 @@
-import { useMemo } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useMemo, useRef } from 'react';
+import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { AURIA_CHAT_SCROLL_END_PADDING, AURIA_CONTENT_HORIZONTAL_INSET } from './auriaLayout';
 import { auriaTypography, liquidGlassBorder, liquidGlassTokens, useTheme } from '../../theme';
 import type { AuriaChatMessage } from '../../features/auria/types';
 
 type AuriaChatViewProps = {
   messages: AuriaChatMessage[];
+  isResponding?: boolean;
 };
 
-export function AuriaChatView({ messages }: AuriaChatViewProps) {
+export function AuriaChatView({ messages, isResponding = false }: AuriaChatViewProps) {
   const { ds, theme } = useTheme();
   const styles = useMemo(() => createStyles(ds, theme), [ds, theme]);
+  const scrollRef = useRef<ScrollView>(null);
 
   return (
     <ScrollView
+      ref={scrollRef}
       style={styles.scroll}
       contentContainerStyle={styles.scrollContent}
       showsVerticalScrollIndicator={false}
       keyboardShouldPersistTaps="handled"
+      keyboardDismissMode="interactive"
+      onContentSizeChange={() => scrollRef.current?.scrollToEnd({ animated: true })}
     >
       {messages.map((message) => {
         const isUser = message.role === 'user';
@@ -34,6 +39,14 @@ export function AuriaChatView({ messages }: AuriaChatViewProps) {
           </View>
         );
       })}
+      {isResponding ? (
+        <View style={[styles.row, styles.rowAssistant]}>
+          <View style={[styles.bubble, styles.bubbleAssistant, styles.thinkingBubble]}>
+            <ActivityIndicator size="small" color={ds.gray500} />
+            <Text style={[styles.text, styles.thinkingText]}>Auria is thinking</Text>
+          </View>
+        </View>
+      ) : null}
     </ScrollView>
   );
 }
@@ -88,6 +101,16 @@ function createStyles(
     },
     textAssistant: {
       color: ds.gray900,
+    },
+    thinkingBubble: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+      paddingVertical: 10,
+    },
+    thinkingText: {
+      color: ds.gray500,
+      fontSize: 13,
     },
   });
 }

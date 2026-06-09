@@ -1,4 +1,4 @@
-import { useMemo, useReducer } from 'react';
+import { useEffect, useMemo, useReducer } from 'react';
 import {
   AuriaPanel,
   AuriaProject,
@@ -19,6 +19,7 @@ type WorkspaceState = {
   projects: AuriaProject[];
   projectRows: AuriaSidebarProjectRow[];
   messages: AuriaChatMessage[];
+  pendingReply: { id: number; text: string } | null;
   newProjectOpen: boolean;
 };
 
@@ -27,6 +28,7 @@ type WorkspaceAction =
   | { type: 'open-panel'; panel: AuriaPanel }
   | { type: 'new-chat' }
   | { type: 'send-message'; text: string; id: number }
+  | { type: 'receive-reply'; text: string; id: number }
   | { type: 'open-conversation'; conversationId: string }
   | { type: 'open-project-modal' }
   | { type: 'close-project-modal' }
@@ -40,37 +42,41 @@ const initialState: WorkspaceState = {
   projects: [...auriaProjects],
   projectRows: [...auriaSidebarProjects],
   messages: [],
+  pendingReply: null,
   newProjectOpen: false,
 };
 
 function buildAssistantReply(text: string): string {
   const normalized = text.toLowerCase();
   if (normalized.includes('task') || normalized.includes('priority')) {
-    return 'I can turn that into a prioritized task plan. The task service is not connected yet, so this remains a draft.';
+    return 'Here is a practical priority structure:\n\n1. Define the outcome and deadline.\n2. Separate urgent work from important work.\n3. Assign an owner and next action to every task.\n4. Review blockers before starting execution.\n\nTell me the project or deadline and I will turn this into a specific task list.';
   }
   if (normalized.includes('report') || normalized.includes('summary')) {
-    return 'I can prepare that summary. The reporting service is not connected yet, so I am using the current workspace mock data.';
+    return 'I can prepare the summary. Send the notes, document, or key points and I will organize them into: executive summary, decisions, risks, and next actions.';
   }
   if (normalized.includes('email') || normalized.includes('follow-up')) {
-    return 'I can draft the follow-up. Email delivery is not connected yet, so nothing will be sent.';
+    return 'I can draft that follow-up. Share the recipient, desired tone, and the action you want them to take. I will produce a concise subject line and editable email.';
   }
   if (normalized.includes('create an image') || normalized.includes('image brief')) {
-    return 'The image request is ready with the selected proportion. Image generation will begin when the media service is connected.';
+    return 'Your image brief is ready. I will preserve the selected proportion and can help refine the subject, composition, lighting, and visual style before generation.';
   }
   if (
     normalized.includes('create a document') ||
     normalized.includes('create a presentation') ||
     normalized.includes('create a spreadsheet')
   ) {
-    return 'The document workspace is ready. I will keep the content editable and preserve the requested structure when the document service is connected.';
+    return 'The document workspace is ready. I can build the outline first, then draft each section while keeping the content editable.';
   }
   if (normalized.includes('shared conversation with')) {
-    return 'The teammate AI context has been added to this conversation. Cross-employee AI sync will activate when the workspace service is connected.';
+    return 'The teammate AI has been added to this conversation. Describe the decision or question you want to work through together.';
   }
   if (normalized.includes('attached files')) {
-    return 'The selected files are ready for analysis. File ingestion will start when the workspace storage service is connected.';
+    return 'The files are ready for analysis. Tell me whether you want a summary, comparison, risk review, data extraction, or action plan.';
   }
-  return 'I understand the request. Auria is currently running with local workspace data while the backend connection is pending.';
+  if (normalized.includes('hello') || normalized.includes('hi ')) {
+    return 'Hi Marta. What would you like to work on? I can help plan work, summarize information, draft content, or organize a decision.';
+  }
+  return `I understand. Here is how I would approach it:\n\n• Clarify the desired outcome.\n• Gather the relevant context and constraints.\n• Produce a first actionable version.\n• Refine it with your feedback.\n\nWhat result do you want from “${text.trim()}”?`;
 }
 
 function workspaceReducer(state: WorkspaceState, action: WorkspaceAction): WorkspaceState {
@@ -91,6 +97,7 @@ function workspaceReducer(state: WorkspaceState, action: WorkspaceAction): Works
         composerText: '',
         activeConversationId: null,
         messages: [],
+        pendingReply: null,
       };
     case 'send-message': {
       const text = action.text.trim();
@@ -100,13 +107,24 @@ function workspaceReducer(state: WorkspaceState, action: WorkspaceAction): Works
         panel: 'chat',
         showWelcome: false,
         composerText: '',
+        activeConversationId: state.activeConversationId ?? `local-${action.id}`,
+        pendingReply: { id: action.id, text },
         messages: [
           ...state.messages,
           { id: `m-${action.id}`, role: 'user', text },
-          { id: `m-${action.id}-a`, role: 'assistant', text: buildAssistantReply(text) },
         ],
       };
     }
+    case 'receive-reply':
+      if (state.pendingReply?.id !== action.id) return state;
+      return {
+        ...state,
+        pendingReply: null,
+        messages: [
+          ...state.messages,
+          { id: `m-${action.id}-a`, role: 'assistant', text: action.text },
+        ],
+      };
     case 'open-conversation': {
       const conversation = auriaConversations.find((item) => item.id === action.conversationId);
       return {
@@ -114,6 +132,7 @@ function workspaceReducer(state: WorkspaceState, action: WorkspaceAction): Works
         panel: 'chat',
         showWelcome: false,
         activeConversationId: action.conversationId,
+        pendingReply: null,
         messages: [
           {
             id: `history-${action.conversationId}`,
@@ -170,15 +189,28 @@ function workspaceReducer(state: WorkspaceState, action: WorkspaceAction): Works
 export function useAuriaWorkspace() {
   const [state, dispatch] = useReducer(workspaceReducer, initialState);
 
+  useEffect(() => {
+    if (!state.pendingReply) return;
+    const { id, text } = state.pendingReply;
+    const timer = setTimeout(() => {
+      dispatch({ type: 'receive-reply', id, text: buildAssistantReply(text) });
+    }, 700);
+    return () => clearTimeout(timer);
+  }, [state.pendingReply]);
+
   return useMemo(
     () => ({
       ...state,
       isWelcomeHome: state.showWelcome && state.panel === 'chat' && state.messages.length === 0,
       showComposer: state.panel === 'chat',
+      isResponding: state.pendingReply !== null,
       setComposerText: (value: string) => dispatch({ type: 'set-composer', value }),
       openPanel: (panel: AuriaPanel) => dispatch({ type: 'open-panel', panel }),
       newChat: () => dispatch({ type: 'new-chat' }),
-      sendMessage: (text: string) => dispatch({ type: 'send-message', text, id: Date.now() }),
+      sendMessage: (text: string) => {
+        if (state.pendingReply) return;
+        dispatch({ type: 'send-message', text, id: Date.now() });
+      },
       openConversation: (conversationId: string) =>
         dispatch({ type: 'open-conversation', conversationId }),
       openProjectModal: () => dispatch({ type: 'open-project-modal' }),

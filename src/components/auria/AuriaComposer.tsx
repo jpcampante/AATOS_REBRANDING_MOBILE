@@ -35,6 +35,7 @@ type AuriaComposerProps = {
   onSend?: () => void;
   onAttach?: () => void;
   bottomInset?: number;
+  isResponding?: boolean;
 };
 
 const inputWebFocusReset =
@@ -53,7 +54,7 @@ const inputWebFocusReset =
 
 export const AuriaComposer = forwardRef<AuriaComposerHandle, AuriaComposerProps>(
   function AuriaComposer(
-    { value, onChangeText, onSend, onAttach, bottomInset = 0 },
+    { value, onChangeText, onSend, onAttach, bottomInset = 0, isResponding = false },
     ref,
   ) {
     const [draft, setDraft] = useState('');
@@ -76,7 +77,7 @@ export const AuriaComposer = forwardRef<AuriaComposerHandle, AuriaComposerProps>
     }));
 
     const handleSend = () => {
-      if (!hasText) return;
+      if (!hasText || isResponding) return;
       inputRef.current?.blur();
       Keyboard.dismiss();
       onSend?.();
@@ -145,12 +146,12 @@ export const AuriaComposer = forwardRef<AuriaComposerHandle, AuriaComposerProps>
         <Pressable
           style={({ pressed }) => [
             styles.voiceButton,
-            hasText && styles.voiceButtonActive,
-            !hasText && styles.voiceButtonDisabled,
-            pressed && hasText && styles.voiceButtonPressed,
+            hasText && !isResponding && styles.voiceButtonActive,
+            (!hasText || isResponding) && styles.voiceButtonDisabled,
+            pressed && hasText && !isResponding && styles.voiceButtonPressed,
           ]}
           onPress={handleSend}
-          disabled={!hasText}
+          disabled={!hasText || isResponding}
           accessibilityRole="button"
           accessibilityLabel="Send"
           hitSlop={6}

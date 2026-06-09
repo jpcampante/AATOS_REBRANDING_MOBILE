@@ -141,7 +141,7 @@ export function AuriaCreateMenu({ visible, onClose, onSendRequest }: AuriaCreate
         />
         <LiquidGlassSurface
           strong
-          elevationLevel="modal"
+          elevated={false}
           borderRadius={theme.radius.panel}
           style={styles.sheet}
         >

@@ -1,5 +1,5 @@
 import { useMemo, type ReactNode } from 'react';
-import { Animated, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Animated, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import {
   auriaConversations,
   auriaProfileInitials,
@@ -187,7 +187,11 @@ export function AuriaSidebar({
     <Animated.View
       style={[
         styles.drawerShell,
-        revealProgress ? { opacity: revealProgress } : { opacity: open ? 1 : 0 },
+        Platform.OS === 'ios'
+          ? null
+          : revealProgress
+            ? { opacity: revealProgress }
+            : { opacity: open ? 1 : 0 },
         { pointerEvents: open ? 'auto' : 'none' },
       ]}
       aria-hidden={!open}

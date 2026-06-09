@@ -128,7 +128,12 @@ export function AuriaCreateMenu({ visible, onClose, onSendRequest }: AuriaCreate
           : 'Talk to teammate AI';
 
   return (
-    <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
+    <Modal
+      visible={visible}
+      transparent
+      animationType={Platform.OS === 'ios' ? 'none' : 'fade'}
+      onRequestClose={onClose}
+    >
       <KeyboardAvoidingView
         style={styles.overlay}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}

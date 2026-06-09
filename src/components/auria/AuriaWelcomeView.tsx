@@ -120,7 +120,7 @@ export function AuriaWelcomeView({
               style={[
                 styles.suggestions,
                 {
-                  opacity: listOpacity,
+                  opacity: Platform.OS === 'ios' ? 1 : listOpacity,
                   transform: [{ translateY: listShift }],
                 },
               ]}

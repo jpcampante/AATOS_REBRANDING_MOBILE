@@ -2,6 +2,7 @@ import { ReactNode, useEffect, useRef } from 'react';
 import { Animated, Easing, Platform, StyleSheet } from 'react-native';
 
 const USE_NATIVE_DRIVER = Platform.OS !== 'web';
+const CAN_ANIMATE_OPACITY = Platform.OS !== 'ios';
 
 type AnimatedScreenBlockProps = {
   index: number;
@@ -58,7 +59,7 @@ export function AnimatedScreenBlock({
       style={[
         styles.block,
         centered ? styles.blockCentered : null,
-        { opacity, transform: [{ translateY }] },
+        CAN_ANIMATE_OPACITY ? { opacity, transform: [{ translateY }] } : { transform: [{ translateY }] },
       ]}
     >
       {children}

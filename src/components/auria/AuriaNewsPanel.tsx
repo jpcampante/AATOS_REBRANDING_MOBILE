@@ -183,13 +183,10 @@ function createStyles(theme: ReturnType<typeof useTheme>['theme']) {
       paddingHorizontal: 10,
       paddingVertical: 6,
       borderRadius: theme.radius.pill,
-      borderWidth: 1,
-      borderColor: glass.borderSubtle,
       backgroundColor: glass.fill,
     },
     topicChipActive: {
       backgroundColor: glass.fillStrong,
-      borderColor: glass.border,
     },
     topicText: {
       ...auriaTypography.body,

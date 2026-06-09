@@ -199,8 +199,6 @@ function createStyles(theme: ReturnType<typeof useTheme>['theme']) {
       paddingVertical: 8,
       borderRadius: theme.radius.pill,
       backgroundColor: glass.fill,
-      borderWidth: 1,
-      borderColor: glass.borderSubtle,
     },
     segmentActive: {
       backgroundColor: theme.colors.accent,

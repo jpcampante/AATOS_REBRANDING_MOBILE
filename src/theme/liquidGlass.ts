@@ -59,7 +59,14 @@ export function liquidGlassBorder(theme: AatosTheme, subtle = false): ViewStyle 
   if (Platform.OS === 'ios') return {};
   return {
     borderWidth: 1,
-    borderColor: subtle ? theme.colors.glassBorderSubtle : theme.colors.glassBorder,
+    borderColor:
+      theme.mode === 'dark'
+        ? subtle
+          ? 'rgba(255, 255, 255, 0.14)'
+          : 'rgba(255, 255, 255, 0.22)'
+        : subtle
+          ? 'rgba(255, 255, 255, 0.72)'
+          : 'rgba(255, 255, 255, 0.9)',
   };
 }
 
@@ -67,7 +74,7 @@ export function liquidGlassElevation(
   theme: AatosTheme,
   level: LiquidGlassElevation = 'dock',
 ): ViewStyle {
-  if (Platform.OS === 'web' || Platform.OS === 'ios') {
+  if (Platform.OS === 'web') {
     return {};
   }
 
@@ -80,10 +87,10 @@ export function liquidGlassElevation(
           modal: { shadowOpacity: 0.42, shadowRadius: 28, shadowOffset: { width: 0, height: 14 } },
         }
       : {
-          dock: { shadowOpacity: 0.1, shadowRadius: 16, shadowOffset: { width: 0, height: 7 } },
-          input: { shadowOpacity: 0.07, shadowRadius: 8, shadowOffset: { width: 0, height: 3 } },
-          card: { shadowOpacity: 0.07, shadowRadius: 10, shadowOffset: { width: 0, height: 4 } },
-          modal: { shadowOpacity: 0.32, shadowRadius: 28, shadowOffset: { width: 0, height: 14 } },
+          dock: { shadowOpacity: 0.13, shadowRadius: 22, shadowOffset: { width: 0, height: 10 } },
+          input: { shadowOpacity: 0.1, shadowRadius: 14, shadowOffset: { width: 0, height: 6 } },
+          card: { shadowOpacity: 0.08, shadowRadius: 14, shadowOffset: { width: 0, height: 6 } },
+          modal: { shadowOpacity: 0.18, shadowRadius: 32, shadowOffset: { width: 0, height: 16 } },
         };
 
   return {
@@ -100,10 +107,10 @@ export function liquidGlassElevationWeb(
   if (Platform.OS !== 'web') return {};
 
   const light = {
-    dock: '0 7px 24px rgba(37, 43, 47, 0.1), 0 2px 7px rgba(37, 43, 47, 0.06)',
-    input: '0 3px 12px rgba(37, 43, 47, 0.07), 0 1px 3px rgba(37, 43, 47, 0.04)',
-    card: '0 4px 16px rgba(37, 43, 47, 0.07), 0 1px 5px rgba(37, 43, 47, 0.05)',
-    modal: '0 18px 52px rgba(0, 0, 0, 0.34), 0 6px 18px rgba(0, 0, 0, 0.2)',
+    dock: '0 12px 34px rgba(37, 43, 47, 0.12), 0 3px 10px rgba(37, 43, 47, 0.06)',
+    input: '0 7px 22px rgba(37, 43, 47, 0.1), 0 2px 6px rgba(37, 43, 47, 0.05)',
+    card: '0 7px 22px rgba(37, 43, 47, 0.08), 0 2px 6px rgba(37, 43, 47, 0.04)',
+    modal: '0 22px 64px rgba(37, 43, 47, 0.18), 0 8px 24px rgba(37, 43, 47, 0.1)',
   } as const;
   const dark = {
     dock: '0 10px 32px rgba(0, 0, 0, 0.34), 0 2px 10px rgba(0, 0, 0, 0.22)',

@@ -117,7 +117,7 @@ export function ProductNavBar({ activeTab, onTabChange }: ProductNavBarProps) {
   return (
     <View style={styles.wrap}>
       <LiquidGlassSurface
-        elevated={false}
+        elevationLevel="dock"
         borderRadius={theme.radius.panel}
         style={styles.fallbackBar}
       >

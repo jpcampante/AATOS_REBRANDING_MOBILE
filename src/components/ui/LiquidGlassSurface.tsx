@@ -42,6 +42,9 @@ function toWebStyle(style: StyleProp<ViewStyle>) {
     flattened.paddingBottom = vertical;
     delete flattened.paddingVertical;
   }
+  if (flattened.flexDirection !== undefined) {
+    flattened.display = 'flex';
+  }
 
   return flattened;
 }
@@ -78,33 +81,74 @@ export function LiquidGlassSurface({
   const useNativeGlass = isNativeLiquidGlassAvailable();
   const useInteractiveGlass = interactive || variant === 'input';
   const nativeGlassStyle = useInteractiveGlass ? 'clear' : 'regular';
+  const fallbackRim = theme.mode === 'dark'
+    ? 'rgba(255, 255, 255, 0.24)'
+    : 'rgba(255, 255, 255, 0.88)';
+  const fallbackSheen = theme.mode === 'dark'
+    ? 'rgba(255, 255, 255, 0.3)'
+    : 'rgba(255, 255, 255, 0.96)';
 
   const fallbackStyle = useMemo(() => {
     const iosFallback = Platform.OS === 'ios';
     if (variant === 'input') {
       return {
+        position: 'relative' as const,
         borderRadius: radius,
         overflow: 'hidden' as const,
-        backgroundColor: iosFallback ? 'rgba(255, 255, 255, 0.38)' : glass.inputFill,
+        backgroundColor: iosFallback
+          ? theme.mode === 'dark'
+            ? 'rgba(44, 47, 53, 0.7)'
+            : 'rgba(255, 255, 255, 0.68)'
+          : glass.inputFill,
         ...rim,
         ...glass.inputWebBlur,
       };
     }
 
     return {
+      position: 'relative' as const,
       borderRadius: radius,
       overflow: 'hidden' as const,
       backgroundColor: iosFallback
-        ? strong
-          ? 'rgba(255, 255, 255, 0.5)'
-          : 'rgba(255, 255, 255, 0.32)'
+        ? theme.mode === 'dark'
+          ? strong
+            ? 'rgba(44, 47, 53, 0.8)'
+            : 'rgba(44, 47, 53, 0.66)'
+          : strong
+            ? 'rgba(255, 255, 255, 0.78)'
+            : 'rgba(255, 255, 255, 0.62)'
         : strong
           ? glass.fillStrong
           : glass.fill,
       ...rim,
       ...glass.webBlur,
     };
-  }, [glass, radius, rim, strong, variant]);
+  }, [glass, radius, rim, strong, theme.mode, variant]);
+
+  const nativeFallbackRim = (
+    <>
+      <View
+        pointerEvents="none"
+        style={[
+          styles.rim,
+          {
+            borderRadius: radius,
+            borderColor: fallbackRim,
+          },
+        ]}
+      />
+      <View
+        pointerEvents="none"
+        style={[
+          styles.sheen,
+          {
+            backgroundColor: fallbackSheen,
+            borderRadius: 1,
+          },
+        ]}
+      />
+    </>
+  );
 
   const nativeGlassBody = (
     <GlassView
@@ -132,16 +176,20 @@ export function LiquidGlassSurface({
         style: {
           ...toWebStyle(fallbackStyle),
           borderStyle: 'solid',
+          boxShadow: `inset 0 1px 0 ${fallbackSheen}, inset 0 0 0 1px ${fallbackRim}`,
           ...toWebStyle(style),
         },
       },
       children,
     )
   ) : (
-    <View style={[fallbackStyle, style]}>{children}</View>
+    <View style={[fallbackStyle, style]}>
+      {children}
+      {nativeFallbackRim}
+    </View>
   );
 
-  if (!elevated) {
+  if (!elevated || useNativeGlass) {
     return body;
   }
 
@@ -155,5 +203,16 @@ export function LiquidGlassSurface({
 const styles = StyleSheet.create({
   elevationWrap: {
     overflow: 'visible',
+  },
+  rim: {
+    ...StyleSheet.absoluteFillObject,
+    borderWidth: StyleSheet.hairlineWidth,
+  },
+  sheen: {
+    position: 'absolute',
+    top: 0,
+    left: 18,
+    right: 18,
+    height: StyleSheet.hairlineWidth,
   },
 });

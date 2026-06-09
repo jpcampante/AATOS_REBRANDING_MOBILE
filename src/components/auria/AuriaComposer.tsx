@@ -88,8 +88,30 @@ export const AuriaComposer = forwardRef<AuriaComposerHandle, AuriaComposerProps>
       paddingBottom: bottomInset + AURIA_COMPOSER_BOTTOM_PADDING,
     };
 
-    const inputField = (
-      <View style={styles.inputPill}>
+    const toolbar = (
+      <LiquidGlassSurface
+        variant="input"
+        interactive
+        elevationLevel="dock"
+        borderRadius={AURIA_COMPOSER_TOOLBAR_HEIGHT / 2}
+        style={styles.toolbarGlass}
+      >
+        <Pressable
+          onPress={onAttach}
+          accessibilityRole="button"
+          accessibilityLabel="Open create menu"
+          hitSlop={6}
+          style={({ pressed }) => [styles.attachButton, pressed && styles.attachButtonPressed]}
+        >
+          <AuriaIcon
+            name="plus"
+            size={AURIA_ICON_SIZE.sm}
+            color={ds.gray900}
+            strokeWidth={AURIA_ICON_STROKE_STRONG}
+          />
+        </Pressable>
+
+        <View style={styles.inputPill}>
         <TextInput
           ref={inputRef}
           value={text}
@@ -118,34 +140,7 @@ export const AuriaComposer = forwardRef<AuriaComposerHandle, AuriaComposerProps>
             strokeWidth={AURIA_ICON_STROKE_STRONG}
           />
         </Pressable>
-      </View>
-    );
-
-    const toolbar = (
-      <View style={styles.toolbar}>
-        <Pressable
-          onPress={onAttach}
-          accessibilityRole="button"
-          accessibilityLabel="Open create menu"
-          hitSlop={6}
-          style={({ pressed }) => [styles.attachButton, pressed && styles.attachButtonPressed]}
-        >
-          <AuriaIcon
-            name="plus"
-            size={AURIA_ICON_SIZE.sm}
-            color={ds.gray900}
-            strokeWidth={AURIA_ICON_STROKE_STRONG}
-          />
-        </Pressable>
-
-        <LiquidGlassSurface
-          variant="input"
-          elevated={false}
-          borderRadius={AURIA_COMPOSER_TOOLBAR_HEIGHT / 2}
-          style={styles.inputGlass}
-        >
-          {inputField}
-        </LiquidGlassSurface>
+        </View>
 
         <Pressable
           style={({ pressed }) => [
@@ -167,7 +162,7 @@ export const AuriaComposer = forwardRef<AuriaComposerHandle, AuriaComposerProps>
             strokeWidth={AURIA_ICON_STROKE_SEND}
           />
         </Pressable>
-      </View>
+      </LiquidGlassSurface>
     );
 
     return (
@@ -190,13 +185,12 @@ function createStyles(
       backgroundColor: 'transparent',
     },
     shell: {
-      paddingHorizontal: 6,
+      paddingHorizontal: 4,
     },
-    toolbar: {
+    toolbarGlass: {
       flexDirection: 'row',
       alignItems: 'center',
-      gap: 10,
-      paddingHorizontal: 6,
+      paddingHorizontal: 4,
       minHeight: AURIA_COMPOSER_TOOLBAR_HEIGHT,
     },
     attachButton: {
@@ -211,20 +205,13 @@ function createStyles(
       backgroundColor: glass.pressed,
       transform: [{ scale: 0.96 }],
     },
-    inputGlass: {
-      flex: 1,
-      minHeight: AURIA_COMPOSER_TOOLBAR_HEIGHT,
-      justifyContent: 'center',
-      borderRadius: AURIA_COMPOSER_TOOLBAR_HEIGHT / 2,
-      overflow: 'hidden',
-    },
     inputPill: {
       flex: 1,
       flexDirection: 'row',
       alignItems: 'center',
       minHeight: AURIA_COMPOSER_TOOLBAR_HEIGHT,
-      paddingLeft: 18,
-      paddingRight: 4,
+      paddingLeft: 4,
+      paddingRight: 0,
       backgroundColor: 'transparent',
     },
     input: {

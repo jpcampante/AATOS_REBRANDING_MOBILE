@@ -1,5 +1,5 @@
 /** Composer metrics — keep in sync with AuriaComposer shell. */
-export const AURIA_COMPOSER_TOOLBAR_HEIGHT = 44;
+export const AURIA_COMPOSER_TOOLBAR_HEIGHT = 52;
 export const AURIA_COMPOSER_DOCK_PADDING_V = 12;
 export const AURIA_COMPOSER_CONTENT_GAP = 8;
 export const AURIA_COMPOSER_BOTTOM_PADDING = 8;

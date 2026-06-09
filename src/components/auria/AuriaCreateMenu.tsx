@@ -14,6 +14,7 @@ import {
 import { auriaTypography, liquidGlassTokens, useTheme } from '../../theme';
 import { AuriaIcon, AuriaIconName, AURIA_ICON_SIZE } from '../icons';
 import { LiquidGlassSurface } from '../ui/LiquidGlassSurface';
+import { AURIA_COMPOSER_OVERLAY_BASE_HEIGHT } from './auriaLayout';
 
 type CreateMode = 'home' | 'document' | 'image' | 'teammate';
 type DocumentType = 'Document' | 'Presentation' | 'Spreadsheet' | 'Report';
@@ -28,31 +29,26 @@ type AuriaCreateMenuProps = {
 const ACTIONS: Array<{
   id: Exclude<CreateMode, 'home'> | 'files';
   label: string;
-  description: string;
   icon: AuriaIconName;
 }> = [
   {
     id: 'files',
     label: 'Add files',
-    description: 'Attach documents, images, or data for Auria to analyze.',
     icon: 'upload',
   },
   {
     id: 'document',
     label: 'Create document',
-    description: 'Draft, rewrite, summarize, and structure editable content.',
     icon: 'document',
   },
   {
     id: 'image',
     label: 'Create image',
-    description: 'Describe an image and choose its output proportion.',
     icon: 'photo',
   },
   {
     id: 'teammate',
     label: 'Talk to teammate AI',
-    description: 'Bring another employee AI and their workspace context into the chat.',
     icon: 'users',
   },
 ];
@@ -177,7 +173,6 @@ export function AuriaCreateMenu({ visible, onClose, onSendRequest }: AuriaCreate
               </LiquidGlassSurface>
               <View style={styles.actionCopy}>
                 <Text style={styles.actionTitle}>{action.label}</Text>
-                <Text style={styles.actionDescription}>{action.description}</Text>
               </View>
             </Pressable>
           ))
@@ -243,16 +238,14 @@ export function AuriaCreateMenu({ visible, onClose, onSendRequest }: AuriaCreate
   return (
     <Modal
       visible={visible}
-      transparent={Platform.OS !== 'ios'}
-      animationType={Platform.OS === 'ios' ? 'slide' : 'fade'}
-      presentationStyle={Platform.OS === 'ios' ? 'pageSheet' : 'overFullScreen'}
+      transparent
+      animationType="fade"
+      presentationStyle="overFullScreen"
       onRequestClose={onClose}
     >
-      {Platform.OS === 'ios' ? (
-        <View style={styles.iosSheet}>{menuBody}</View>
-      ) : (
       <KeyboardAvoidingView
         style={styles.overlay}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
         <Pressable
           style={styles.backdrop}
@@ -260,15 +253,17 @@ export function AuriaCreateMenu({ visible, onClose, onSendRequest }: AuriaCreate
           accessibilityRole="button"
           accessibilityLabel="Close create menu"
         />
-        <LiquidGlassSurface
-          elevated={false}
-          borderRadius={theme.radius.panel}
-          style={styles.sheet}
-        >
-          {menuBody}
-        </LiquidGlassSurface>
+        <View style={styles.sheetPosition}>
+          <LiquidGlassSurface
+            strong
+            elevationLevel="modal"
+            borderRadius={theme.radius.panel}
+            style={styles.sheet}
+          >
+            {menuBody}
+          </LiquidGlassSurface>
+        </View>
       </KeyboardAvoidingView>
-      )}
     </Modal>
   );
 }
@@ -315,25 +310,24 @@ function createStyles(theme: ReturnType<typeof useTheme>['theme']) {
     overlay: {
       flex: 1,
       justifyContent: 'flex-end',
-      padding: 12,
-    },
-    iosSheet: {
-      flex: 1,
+      alignItems: 'flex-start',
       paddingHorizontal: 18,
-      paddingTop: 18,
-      paddingBottom: 28,
-      gap: 8,
-      backgroundColor: theme.colors.page,
+      paddingBottom: AURIA_COMPOSER_OVERLAY_BASE_HEIGHT + 72,
     },
     backdrop: {
       ...StyleSheet.absoluteFillObject,
       backgroundColor: 'transparent',
       zIndex: 0,
     },
+    sheetPosition: {
+      width: '88%',
+      maxWidth: 340,
+      maxHeight: '64%',
+    },
     sheet: {
-      maxHeight: '82%',
-      padding: 14,
-      gap: 8,
+      width: '100%',
+      padding: 12,
+      gap: 4,
       zIndex: 1,
     },
     header: {
@@ -365,16 +359,17 @@ function createStyles(theme: ReturnType<typeof useTheme>['theme']) {
     actionRow: {
       flexDirection: 'row',
       alignItems: 'center',
-      gap: 12,
-      padding: 12,
+      gap: 11,
+      paddingHorizontal: 8,
+      paddingVertical: 7,
       borderRadius: theme.radius.md,
     },
     pressed: {
       backgroundColor: glass.pressed,
     },
     actionIcon: {
-      width: 44,
-      height: 44,
+      width: 42,
+      height: 42,
       alignItems: 'center',
       justifyContent: 'center',
       borderRadius: theme.radius.md,
@@ -393,7 +388,7 @@ function createStyles(theme: ReturnType<typeof useTheme>['theme']) {
       ...auriaTypography.body,
       color: theme.colors.textTertiary,
       fontSize: 12,
-      lineHeight: 17,
+      lineHeight: 16,
     },
     section: {
       gap: 8,
@@ -415,12 +410,9 @@ function createStyles(theme: ReturnType<typeof useTheme>['theme']) {
       paddingVertical: 8,
       borderRadius: theme.radius.pill,
       backgroundColor: glass.fill,
-      borderWidth: Platform.OS === 'ios' ? 0 : 1,
-      borderColor: glass.borderSubtle,
     },
     chipActive: {
       backgroundColor: theme.colors.accent,
-      borderColor: theme.colors.accent,
     },
     chipText: {
       ...auriaTypography.body,
@@ -438,12 +430,9 @@ function createStyles(theme: ReturnType<typeof useTheme>['theme']) {
       gap: 10,
       padding: 10,
       borderRadius: theme.radius.md,
-      borderWidth: Platform.OS === 'ios' ? 0 : 1,
-      borderColor: glass.borderSubtle,
     },
     personRowActive: {
       backgroundColor: glass.fillStrong,
-      borderColor: glass.border,
     },
     avatar: {
       width: 38,

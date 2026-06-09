@@ -7,7 +7,6 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import { LiquidGlassSurface } from '../ui/LiquidGlassSurface';
 import { AuriaIcon, AURIA_ICON_SIZE, AURIA_ICON_STROKE_SEND, AURIA_ICON_STROKE_STRONG } from '../icons';
 import { auriaTypography, liquidGlassTokens, useTheme } from '../../theme';
 import {
@@ -160,14 +159,7 @@ export const AuriaComposer = forwardRef<AuriaComposerHandle, AuriaComposerProps>
 
     return (
       <View style={styles.outer}>
-        <LiquidGlassSurface
-          style={[styles.shell, shellStyle]}
-          borderRadius={AURIA_COMPOSER_TOOLBAR_HEIGHT / 2 + 10}
-          elevated
-          elevationLevel="dock"
-        >
-          {toolbar}
-        </LiquidGlassSurface>
+        <View style={[styles.shell, shellStyle]}>{toolbar}</View>
       </View>
     );
   },
@@ -221,25 +213,28 @@ function createStyles(
       flexDirection: 'row',
       alignItems: 'center',
       minHeight: AURIA_COMPOSER_TOOLBAR_HEIGHT,
-      paddingLeft: 16,
-      paddingRight: 6,
+      paddingLeft: 18,
+      paddingRight: 4,
       backgroundColor: 'transparent',
     },
     input: {
       ...auriaTypography.body,
       flex: 1,
       fontSize: 16,
-      lineHeight: 20,
+      lineHeight: 22,
       color: ds.gray900,
       paddingVertical: 0,
+      paddingTop: 0,
+      paddingBottom: 0,
+      margin: 0,
       maxHeight: 100,
-      minHeight: 20,
+      minHeight: 22,
       backgroundColor: 'transparent',
       borderWidth: 0,
       ...(inputWebFocusReset ?? {}),
     },
     micButton: {
-      width: 34,
+      width: 38,
       height: AURIA_COMPOSER_TOOLBAR_HEIGHT,
       alignItems: 'center',
       justifyContent: 'center',

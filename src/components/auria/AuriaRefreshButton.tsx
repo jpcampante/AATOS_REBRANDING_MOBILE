@@ -1,10 +1,9 @@
 import { useMemo, useRef } from 'react';
-import { Animated, Easing, Platform, StyleSheet } from 'react-native';
+import { Animated, Easing, Platform, Pressable, StyleSheet } from 'react-native';
 
 const USE_NATIVE_DRIVER = Platform.OS !== 'web';
-import { AuriaGlassButton } from './AuriaGlassButton';
 import { AuriaIcon, AURIA_ICON_SIZE, AURIA_ICON_STROKE_NAV } from '../icons';
-import { useTheme } from '../../theme';
+import { liquidGlassTokens, useTheme } from '../../theme';
 
 type AuriaRefreshButtonProps = {
   onPress?: () => void;
@@ -15,8 +14,8 @@ export function AuriaRefreshButton({
   onPress,
   accessibilityLabel = 'Refresh suggestions',
 }: AuriaRefreshButtonProps) {
-  const { ds } = useTheme();
-  const styles = useMemo(() => createStyles(), []);
+  const { ds, theme } = useTheme();
+  const styles = useMemo(() => createStyles(theme), [theme]);
   const spin = useRef(new Animated.Value(0)).current;
   const spinning = useRef(false);
 
@@ -47,12 +46,12 @@ export function AuriaRefreshButton({
   });
 
   return (
-    <AuriaGlassButton
+    <Pressable
       onPress={handlePress}
+      accessibilityRole="button"
       accessibilityLabel={accessibilityLabel}
       hitSlop={10}
-      borderRadius={21}
-      surfaceStyle={styles.button}
+      style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}
     >
       <Animated.View style={[styles.iconWrap, { transform: [{ rotate }] }]}>
         <AuriaIcon
@@ -62,17 +61,24 @@ export function AuriaRefreshButton({
           strokeWidth={AURIA_ICON_STROKE_NAV}
         />
       </Animated.View>
-    </AuriaGlassButton>
+    </Pressable>
   );
 }
 
-function createStyles() {
+function createStyles(theme: ReturnType<typeof useTheme>['theme']) {
+  const glass = liquidGlassTokens(theme);
   return StyleSheet.create({
     button: {
       width: 42,
       height: 42,
       alignItems: 'center',
       justifyContent: 'center',
+      backgroundColor: 'transparent',
+    },
+    buttonPressed: {
+      backgroundColor: glass.pressed,
+      borderRadius: 21,
+      transform: [{ scale: 0.96 }],
     },
     iconWrap: {
       alignItems: 'center',

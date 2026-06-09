@@ -9,8 +9,6 @@ import { PRODUCT_TABS, ProductTabId } from '../../data/productNavigation';
 import {
   liquidGlassBorder,
   liquidGlassColorScheme,
-  liquidGlassElevation,
-  liquidGlassElevationWeb,
   liquidGlassTokens,
   useTheme,
 } from '../../theme';
@@ -100,12 +98,10 @@ export function ProductNavBar({ activeTab, onTabChange }: ProductNavBarProps) {
   );
   const glass = isAuria ? liquidGlassTokens(theme) : null;
   const nativeScheme = liquidGlassColorScheme(theme);
-  const navElevation = isAuria ? liquidGlassElevation(theme, 'dock') : null;
-  const navElevationWeb = isAuria ? liquidGlassElevationWeb(theme, 'dock') : null;
 
   if (useNativeGlass) {
     return (
-      <View style={[styles.wrap, navElevation, navElevationWeb]}>
+      <View style={styles.wrap}>
         <GlassContainer spacing={10} style={styles.glassContainer}>
           <GlassView
             style={styles.glassBar}
@@ -121,7 +117,7 @@ export function ProductNavBar({ activeTab, onTabChange }: ProductNavBarProps) {
   }
 
   return (
-    <View style={[styles.wrap, navElevation, navElevationWeb]}>
+    <View style={styles.wrap}>
       <View style={styles.fallbackBar}>
         <TabRail activeTab={activeTab} onTabChange={onTabChange} />
       </View>

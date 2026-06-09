@@ -4,6 +4,7 @@
   "main": "index.ts",
   "dependencies": {
     "expo": "^54.0.0",
+    "expo-document-picker": "~14.0.8",
     "expo-glass-effect": "~0.1.10",
     "expo-status-bar": "~3.0.9",
     "react": "19.1.0",
@@ -19,11 +20,12 @@
     "typescript": "~5.9.2"
   },
   "scripts": {
-    "start": "expo start --tunnel",
+    "start": "expo start --lan",
+    "start:remote": "powershell -ExecutionPolicy Bypass -File ./start-expo-remote.ps1",
     "start:lan": "expo start --lan",
     "start:local": "expo start --localhost",
-    "android": "expo start --tunnel --android",
-    "ios": "expo start --tunnel --ios",
+    "android": "expo start --lan --android",
+    "ios": "expo start --lan --ios",
     "web": "expo start --web --localhost --port 8083",
     "web:tunnel": "expo start --web --tunnel"
   },

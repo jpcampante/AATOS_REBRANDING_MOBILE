@@ -1,14 +1,8 @@
 import { useMemo } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { auriaGlassBorder, auriaGlassTokens } from './auriaGlass';
 import { AURIA_CHAT_SCROLL_END_PADDING, AURIA_CONTENT_HORIZONTAL_INSET } from './auriaLayout';
-import { useTheme } from '../../theme';
-
-export type AuriaChatMessage = {
-  id: string;
-  role: 'user' | 'assistant';
-  text: string;
-};
+import { auriaTypography, liquidGlassBorder, liquidGlassTokens, useTheme } from '../../theme';
+import type { AuriaChatMessage } from '../../features/auria/types';
 
 type AuriaChatViewProps = {
   messages: AuriaChatMessage[];
@@ -48,8 +42,8 @@ function createStyles(
   ds: ReturnType<typeof useTheme>['ds'],
   theme: ReturnType<typeof useTheme>['theme'],
 ) {
-  const glass = auriaGlassTokens(theme.mode);
-  const rim = auriaGlassBorder(theme.mode);
+  const glass = liquidGlassTokens(theme);
+  const rim = liquidGlassBorder(theme);
 
   return StyleSheet.create({
     scroll: {
@@ -85,6 +79,7 @@ function createStyles(
       ...glass.webBlur,
     },
     text: {
+      ...auriaTypography.body,
       fontSize: 15,
       lineHeight: 22,
     },

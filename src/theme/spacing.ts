@@ -1,4 +1,4 @@
-/** Espaçamento e raios — alinhados ao web AATOS / Auria DS. */
+/** Spacing and radii aligned with the AATOS and Auria web design system. */
 export const spacing = {
   xs: 4,
   sm: 8,

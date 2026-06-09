@@ -1,4 +1,4 @@
-/** Escala tipográfica mobile — base 14px como no web `--t-font-size`. */
+/** Mobile typography scale using the web `--t-font-size` 14px base. */
 export const typography = {
   fontSize: {
     xs: 11,

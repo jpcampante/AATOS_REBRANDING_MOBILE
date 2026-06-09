@@ -6,8 +6,14 @@ import {
   isGlassEffectAPIAvailable,
 } from 'expo-glass-effect';
 import { PRODUCT_TABS, ProductTabId } from '../../data/productNavigation';
-import { auriaGlassBorder, auriaGlassColorScheme, auriaGlassElevation, auriaGlassElevationWeb, auriaGlassTokens } from '../auria/auriaGlass';
-import { useTheme } from '../../theme';
+import {
+  liquidGlassBorder,
+  liquidGlassColorScheme,
+  liquidGlassElevation,
+  liquidGlassElevationWeb,
+  liquidGlassTokens,
+  useTheme,
+} from '../../theme';
 
 type ProductNavBarProps = {
   activeTab: ProductTabId;
@@ -45,6 +51,8 @@ function TabRail({
             <Pressable
               style={[styles.tab, active && !glassActiveTab && styles.tabActiveFallback]}
               onPress={() => onTabChange(tab.id)}
+              accessibilityRole="button"
+              accessibilityState={{ selected: active }}
             >
               <Text style={[styles.tabText, active && styles.tabTextActive]}>{tab.label}</Text>
             </Pressable>
@@ -73,6 +81,8 @@ function TabRail({
         <Pressable
           style={styles.themeToggle}
           onPress={() => setPreference(preference === 'dark' ? 'light' : 'dark')}
+          accessibilityRole="button"
+          accessibilityLabel={`Switch to ${theme.mode === 'dark' ? 'light' : 'dark'} theme`}
         >
           <Text style={styles.themeToggleText}>{theme.mode === 'dark' ? '☀' : '☾'}</Text>
         </Pressable>
@@ -88,10 +98,10 @@ export function ProductNavBar({ activeTab, onTabChange }: ProductNavBarProps) {
     () => createStyles(theme, isAuria),
     [isAuria, theme],
   );
-  const glass = isAuria ? auriaGlassTokens(theme.mode) : null;
-  const nativeScheme = auriaGlassColorScheme(theme.mode);
-  const navElevation = isAuria ? auriaGlassElevation(theme.mode, 'dock') : null;
-  const navElevationWeb = isAuria ? auriaGlassElevationWeb(theme.mode, 'dock') : null;
+  const glass = isAuria ? liquidGlassTokens(theme) : null;
+  const nativeScheme = liquidGlassColorScheme(theme);
+  const navElevation = isAuria ? liquidGlassElevation(theme, 'dock') : null;
+  const navElevationWeb = isAuria ? liquidGlassElevationWeb(theme, 'dock') : null;
 
   if (useNativeGlass) {
     return (
@@ -124,8 +134,8 @@ function createStyles(
   isAuria = false,
 ) {
   const { colors, radius, shadow } = theme;
-  const glass = isAuria ? auriaGlassTokens(theme.mode) : null;
-  const rimSubtle = isAuria ? auriaGlassBorder(theme.mode, true) : null;
+  const glass = isAuria ? liquidGlassTokens(theme) : null;
+  const rimSubtle = isAuria ? liquidGlassBorder(theme, true) : null;
 
   return StyleSheet.create({
     wrap: {

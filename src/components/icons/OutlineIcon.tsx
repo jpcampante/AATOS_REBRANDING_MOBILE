@@ -1,5 +1,5 @@
 import Svg, { Path } from 'react-native-svg';
-import { AURIA_ICON_STROKE } from '../../theme/auriaIconTokens';
+import { AURIA_ICON_STROKE, lightTheme } from '../../theme';
 
 export type OutlineIconProps = {
   paths: string | readonly string[];
@@ -11,7 +11,7 @@ export type OutlineIconProps = {
 export function OutlineIcon({
   paths,
   size = 24,
-  color = '#15191C',
+  color = lightTheme.colors.text,
   strokeWidth = AURIA_ICON_STROKE,
 }: OutlineIconProps) {
   const pathList = Array.isArray(paths) ? paths : [paths];

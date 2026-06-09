@@ -31,7 +31,7 @@ export function AppShell({ activeTab, onTabChange, renderScreen }: AppShellProps
         </View>
       </SafeAreaView>
 
-      <View style={styles.navOverlay} pointerEvents="box-none">
+      <View style={styles.navOverlay}>
         <SafeAreaView edges={['bottom']} style={styles.navSafe}>
           <ProductNavBar activeTab={activeTab} onTabChange={onTabChange} />
         </SafeAreaView>
@@ -51,12 +51,13 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingBottom: APP_SHELL_BOTTOM_INSET,
   },
-  navOverlay: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-  },
+    navOverlay: {
+      position: 'absolute',
+      left: 0,
+      right: 0,
+      bottom: 0,
+      pointerEvents: 'box-none',
+    },
   navSafe: {
     backgroundColor: 'transparent',
   },

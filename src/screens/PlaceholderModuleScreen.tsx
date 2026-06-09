@@ -21,7 +21,7 @@ export function PlaceholderModuleScreen({ title, subtitle }: PlaceholderModuleSc
 
       <AnimatedScreenBlock index={1}>
         <View style={styles.card}>
-          <Text style={styles.cardText}>Em breve — UI mock a seguir ao web.</Text>
+          <Text style={styles.cardText}>Coming soon - mobile experience aligned with AATOS.</Text>
         </View>
       </AnimatedScreenBlock>
     </View>

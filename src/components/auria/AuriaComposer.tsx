@@ -7,10 +7,9 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import { auriaGlassTokens } from './auriaGlass';
 import { LiquidGlassSurface } from '../ui/LiquidGlassSurface';
 import { AuriaIcon, AURIA_ICON_SIZE, AURIA_ICON_STROKE_SEND, AURIA_ICON_STROKE_STRONG } from '../icons';
-import { useTheme } from '../../theme';
+import { auriaTypography, liquidGlassTokens, useTheme } from '../../theme';
 import {
   AURIA_COMPOSER_CONTENT_GAP,
   AURIA_COMPOSER_BOTTOM_PADDING,
@@ -102,7 +101,11 @@ export const AuriaComposer = forwardRef<AuriaComposerHandle, AuriaComposerProps>
           submitBehavior="newline"
           onSubmitEditing={Platform.OS === 'ios' ? undefined : () => Keyboard.dismiss()}
         />
-        <Pressable style={styles.micButton} accessibilityLabel="Voz">
+        <Pressable
+          style={styles.micButton}
+          accessibilityRole="button"
+          accessibilityLabel="Voice"
+        >
           <AuriaIcon
             name="mic"
             size={AURIA_ICON_SIZE.sm}
@@ -117,7 +120,8 @@ export const AuriaComposer = forwardRef<AuriaComposerHandle, AuriaComposerProps>
       <View style={styles.toolbar}>
         <Pressable
           onPress={onAttach}
-          accessibilityLabel="Anexar"
+          accessibilityRole="button"
+          accessibilityLabel="Open create menu"
           hitSlop={6}
           style={({ pressed }) => [styles.attachButton, pressed && styles.attachButtonPressed]}
         >
@@ -140,7 +144,8 @@ export const AuriaComposer = forwardRef<AuriaComposerHandle, AuriaComposerProps>
           ]}
           onPress={handleSend}
           disabled={!hasText}
-          accessibilityLabel="Enviar"
+          accessibilityRole="button"
+          accessibilityLabel="Send"
           hitSlop={6}
         >
           <AuriaIcon
@@ -172,7 +177,7 @@ function createStyles(
   ds: ReturnType<typeof useTheme>['ds'],
   theme: ReturnType<typeof useTheme>['theme'],
 ) {
-  const glass = auriaGlassTokens(theme.mode);
+  const glass = liquidGlassTokens(theme);
   return StyleSheet.create({
     outer: {
       width: '100%',
@@ -221,6 +226,7 @@ function createStyles(
       backgroundColor: 'transparent',
     },
     input: {
+      ...auriaTypography.body,
       flex: 1,
       fontSize: 16,
       lineHeight: 20,

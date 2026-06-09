@@ -1,10 +1,16 @@
 import { useMemo, useRef, useState } from 'react';
 import { Animated, Easing, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { auriaWelcomeName, auriaWelcomeSuggestionPool } from '../../data/auriaMockData';
-import { auriaGlassBorder, auriaGlassElevation, auriaGlassElevationWeb, auriaGlassTokens } from './auriaGlass';
 import { AURIA_CONTENT_HORIZONTAL_INSET } from './auriaLayout';
 import { AnimatedScreenBlock } from '../navigation/AnimatedScreenBlock';
-import { useTheme } from '../../theme';
+import {
+  liquidGlassBorder,
+  liquidGlassElevation,
+  liquidGlassElevationWeb,
+  liquidGlassTokens,
+  auriaTypography,
+  useTheme,
+} from '../../theme';
 import { AuriaLogoMark } from './AuriaLogoMark';
 import { AuriaRefreshButton } from './AuriaRefreshButton';
 
@@ -93,44 +99,53 @@ export function AuriaWelcomeView({
   return (
     <View style={styles.wrap}>
       <View style={styles.centerBlock}>
-        <AnimatedScreenBlock index={0}>
-          <View style={styles.logoBlock}>
-            <AuriaLogoMark size="lg" />
+        <AnimatedScreenBlock index={0} centered>
+          <View style={styles.columnWrap}>
+            <View style={styles.logoBlock}>
+              <AuriaLogoMark size="lg" />
+            </View>
           </View>
         </AnimatedScreenBlock>
 
         <AnimatedScreenBlock index={1} centered>
-          <View style={styles.greetingBlock}>
-            <Text style={styles.greetHi}>Hi {auriaWelcomeName}</Text>
-            <Text style={styles.greetTitle}>Where should we start?</Text>
+          <View style={styles.columnWrap}>
+            <View style={styles.greetingBlock}>
+              <Text style={styles.greetHi}>Hi {auriaWelcomeName}</Text>
+              <Text style={styles.greetTitle}>Where should we start?</Text>
+            </View>
           </View>
         </AnimatedScreenBlock>
 
         <AnimatedScreenBlock index={2} centered>
-          <Animated.View
-            style={[
-              styles.suggestions,
-              {
-                opacity: listOpacity,
-                transform: [{ translateY: listShift }],
-              },
-            ]}
-          >
-            {suggestions.map((suggestion) => (
-              <Pressable
-                key={`${refreshKey}-${suggestion}`}
-                style={({ pressed }) => [styles.suggestionPill, pressed && styles.suggestionPillPressed]}
-                onPress={() => onSuggestion(suggestion)}
-              >
-                <Text style={styles.suggestionText}>{suggestion}</Text>
-              </Pressable>
-            ))}
-          </Animated.View>
+          <View style={styles.columnWrap}>
+            <Animated.View
+              style={[
+                styles.suggestions,
+                {
+                  opacity: listOpacity,
+                  transform: [{ translateY: listShift }],
+                },
+              ]}
+            >
+              {suggestions.map((suggestion) => (
+                <Pressable
+                  key={`${refreshKey}-${suggestion}`}
+                  style={({ pressed }) => [styles.suggestionPill, pressed && styles.suggestionPillPressed]}
+                  onPress={() => onSuggestion(suggestion)}
+                  accessibilityRole="button"
+                >
+                  <Text style={styles.suggestionText}>{suggestion}</Text>
+                </Pressable>
+              ))}
+            </Animated.View>
+          </View>
         </AnimatedScreenBlock>
 
-        <AnimatedScreenBlock index={3}>
-          <View style={styles.refreshWrap}>
-            <AuriaRefreshButton onPress={handleRefresh} />
+        <AnimatedScreenBlock index={3} centered>
+          <View style={styles.columnWrap}>
+            <View style={styles.refreshWrap}>
+              <AuriaRefreshButton onPress={handleRefresh} />
+            </View>
           </View>
         </AnimatedScreenBlock>
       </View>
@@ -145,8 +160,8 @@ function createStyles(
   contentTopPadding = 56,
 ) {
   const column = contentMaxWidth ? { maxWidth: contentMaxWidth, width: '100%' as const } : { width: '100%' as const };
-  const glass = auriaGlassTokens(theme.mode);
-  const rim = auriaGlassBorder(theme.mode);
+  const glass = liquidGlassTokens(theme);
+  const rim = liquidGlassBorder(theme);
 
   return StyleSheet.create({
     wrap: {
@@ -162,28 +177,36 @@ function createStyles(
       gap: 14,
     },
     logoBlock: {
+      width: '100%',
       alignItems: 'center',
-      ...column,
     },
     greetingBlock: {
-      ...column,
+      width: '100%',
       alignItems: 'center',
       gap: 4,
     },
+    columnWrap: {
+      ...column,
+      alignSelf: 'center',
+    },
     greetHi: {
+      ...auriaTypography.body,
       fontSize: 17,
       fontWeight: theme.typography.fontWeight.normal,
       color: ds.gray500,
       letterSpacing: -0.2,
       textAlign: 'center',
+      width: '100%',
     },
     greetTitle: {
+      ...auriaTypography.title,
       fontSize: 24,
       fontWeight: theme.typography.fontWeight.normal,
       color: ds.gray700,
       letterSpacing: -0.5,
       lineHeight: 30,
       textAlign: 'center',
+      width: '100%',
     },
     suggestions: {
       ...column,
@@ -198,8 +221,8 @@ function createStyles(
       backgroundColor: glass.fill,
       ...rim,
       ...glass.webBlur,
-      ...auriaGlassElevation(theme.mode, 'card'),
-      ...auriaGlassElevationWeb(theme.mode, 'card'),
+      ...liquidGlassElevation(theme, 'card'),
+      ...liquidGlassElevationWeb(theme, 'card'),
       alignItems: 'center',
       justifyContent: 'center',
     },
@@ -208,13 +231,16 @@ function createStyles(
       transform: [{ scale: 0.985 }],
     },
     suggestionText: {
+      ...auriaTypography.body,
       fontSize: 15,
       fontWeight: theme.typography.fontWeight.medium,
       color: ds.gray900,
       textAlign: 'center',
     },
     refreshWrap: {
-      alignSelf: 'center',
+      width: '100%',
+      alignItems: 'center',
+      justifyContent: 'center',
       marginTop: 2,
     },
   });

@@ -35,6 +35,7 @@ export function AuriaGlassButton({
     <Pressable
       onPress={onPress}
       disabled={disabled}
+      accessibilityRole="button"
       accessibilityLabel={accessibilityLabel}
       hitSlop={hitSlop}
       style={({ pressed }) => [style, pressed && !disabled && styles.pressed]}

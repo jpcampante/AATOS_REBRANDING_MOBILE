@@ -11,7 +11,7 @@ type AuriaDrawerToggleProps = {
 
 export function AuriaDrawerToggle({
   onPress,
-  accessibilityLabel = 'Abrir menu',
+  accessibilityLabel = 'Open menu',
 }: AuriaDrawerToggleProps) {
   const { ds, theme } = useTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);

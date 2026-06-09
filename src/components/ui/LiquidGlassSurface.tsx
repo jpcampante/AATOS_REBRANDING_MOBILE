@@ -2,14 +2,14 @@ import { ReactNode, useMemo } from 'react';
 import { Platform, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import { GlassContainer, GlassView } from 'expo-glass-effect';
 import {
-  auriaGlassBorder,
-  auriaGlassColorScheme,
-  auriaGlassElevation,
-  auriaGlassElevationWeb,
-  auriaGlassTokens,
-  AuriaGlassElevation,
-  isAuriaNativeGlassAvailable,
-} from '../auria/auriaGlass';
+  isNativeLiquidGlassAvailable,
+  liquidGlassBorder,
+  liquidGlassColorScheme,
+  liquidGlassElevation,
+  liquidGlassElevationWeb,
+  liquidGlassTokens,
+  LiquidGlassElevation,
+} from '../../theme/liquidGlass';
 import { useTheme } from '../../theme';
 
 type LiquidGlassSurfaceProps = {
@@ -21,7 +21,7 @@ type LiquidGlassSurfaceProps = {
   variant?: 'surface' | 'input';
   /** Drop shadow below the glass container — never use opacity on GlassView parents. */
   elevated?: boolean;
-  elevationLevel?: AuriaGlassElevation;
+  elevationLevel?: LiquidGlassElevation;
   /** Wrap sibling glass elements in GlassContainer (iOS Liquid Glass performance + morphing). */
   grouped?: boolean;
   groupSpacing?: number;
@@ -41,22 +41,22 @@ export function LiquidGlassSurface({
 }: LiquidGlassSurfaceProps) {
   const { theme } = useTheme();
   const radius = borderRadius ?? theme.radius.panel;
-  const glass = useMemo(() => auriaGlassTokens(theme.mode), [theme.mode]);
+  const glass = useMemo(() => liquidGlassTokens(theme), [theme]);
   const rim = useMemo(
-    () => auriaGlassBorder(theme.mode, variant === 'input'),
-    [theme.mode, variant],
+    () => liquidGlassBorder(theme, variant === 'input'),
+    [theme, variant],
   );
   const level = elevationLevel ?? (variant === 'input' ? 'input' : 'dock');
   const elevation = useMemo(
-    () => auriaGlassElevation(theme.mode, level),
-    [level, theme.mode],
+    () => liquidGlassElevation(theme, level),
+    [level, theme],
   );
   const elevationWeb = useMemo(
-    () => auriaGlassElevationWeb(theme.mode, level),
-    [level, theme.mode],
+    () => liquidGlassElevationWeb(theme, level),
+    [level, theme],
   );
-  const colorScheme = auriaGlassColorScheme(theme.mode);
-  const useNativeGlass = isAuriaNativeGlassAvailable();
+  const colorScheme = liquidGlassColorScheme(theme);
+  const useNativeGlass = isNativeLiquidGlassAvailable();
   const useInteractiveGlass = interactive || variant === 'input';
   const nativeGlassStyle = variant === 'input' ? 'clear' : 'regular';
 

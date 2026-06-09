@@ -1,10 +1,8 @@
-export const auriaWorkspaceName = 'New workspace';
+import { contentColors } from '../theme/aatosTheme';
 
-export const auriaWelcomeSuggestions = [
-  'Create prioritized task list',
-  'Generate report summary',
-  'Structure presentation outline',
-] as const;
+export const auriaWorkspaceName = 'New workspace';
+export const auriaWelcomeName = 'Marta';
+export const auriaProfileInitials = 'MA';
 
 export const auriaWelcomeSuggestionPool = [
   'Create prioritized task list',
@@ -24,9 +22,6 @@ export const auriaSidebarTopItems = [
 ];
 
 export type AuriaPanel = 'chat' | 'news' | 'gallery' | 'search' | 'projects';
-
-export type AuriaTab = AuriaPanel;
-
 export type AuriaProjectVisibility = 'Team' | 'Shared';
 
 export type AuriaProject = {
@@ -47,12 +42,22 @@ export type AuriaSidebarProjectRow = {
   kind: 'new' | 'folder' | 'more';
 };
 
-export const PROJECT_ACCENT_PALETTE = ['#1565C0', '#2E7D32', '#E65100', '#00838F', '#6A1B9A'] as const;
+export const PROJECT_ACCENT_PALETTE = contentColors.project;
 
-export const auriaWelcomeName = 'Marta';
-export const auriaProfileInitials = 'MA';
+export type AuriaNewsTopic = 'Business' | 'Technology' | 'Markets' | 'World';
 
-export const auriaNewsArticles = [
+export type AuriaNewsArticle = {
+  id: string;
+  title: string;
+  summary: string;
+  sources: number;
+  publishedAgo: string;
+  accent: string;
+  topics: AuriaNewsTopic[];
+  featured?: boolean;
+};
+
+export const auriaNewsArticles: AuriaNewsArticle[] = [
   {
     id: '1',
     title: 'Germany, France and the UK outline plan to engage Putin in Ukraine negotiations',
@@ -60,39 +65,117 @@ export const auriaNewsArticles = [
       'European leaders are discussing a joint roadmap to reopen talks with Moscow, focused on security guarantees and a partial ceasefire.',
     sources: 59,
     publishedAgo: '1 hour ago',
-    accent: '#5B7C99',
+    accent: contentColors.news[0],
+    topics: ['World', 'Business'],
+    featured: true,
   },
   {
     id: '2',
     title: 'Ukraine strikes oil terminal near Saint Petersburg',
+    summary:
+      'A new strike near a major export terminal renewed concerns about regional energy supply.',
     sources: 43,
     publishedAgo: '2 hours ago',
-    accent: '#6B7280',
+    accent: contentColors.news[1],
+    topics: ['World', 'Markets'],
   },
   {
     id: '3',
     title: 'Iranian drone attack hits airport in Kuwait',
+    summary:
+      'Air traffic was disrupted after a drone incident affected airport operations and security.',
     sources: 38,
     publishedAgo: '3 hours ago',
-    accent: '#78716C',
+    accent: contentColors.news[2],
+    topics: ['World', 'Technology'],
   },
   {
     id: '4',
     title: 'Bolivian defense minister resigns after political crisis',
+    summary:
+      'The resignation adds pressure to a government already navigating a fast-moving political crisis.',
     sources: 29,
     publishedAgo: '4 hours ago',
-    accent: '#57534E',
+    accent: contentColors.news[3],
+    topics: ['World', 'Business'],
   },
-] as const;
+];
 
-export const auriaGalleryItems = [
-  { id: 'g1', name: 'Q1 Strategy Brief.pdf', type: 'PDF', accent: '#FEE2E2', text: '#B91C1C' },
-  { id: 'g2', name: 'Team photo — Lisbon offsite.jpg', type: 'Image', accent: '#DBEAFE', text: '#1D4ED8' },
-  { id: 'g3', name: 'Customer interview notes.md', type: 'Document', accent: '#F3F4F6', text: '#374151' },
-  { id: 'g4', name: 'Pipeline export.csv', type: 'Data', accent: '#ECFDF5', text: '#047857' },
-  { id: 'g5', name: 'Brand moodboard.png', type: 'Image', accent: '#FEF3C7', text: '#B45309' },
-  { id: 'g6', name: 'Board memo.pdf', type: 'PDF', accent: '#FEE2E2', text: '#B91C1C' },
-] as const;
+export type AuriaGalleryCategory = 'Image' | 'Document' | 'Spreadsheet' | 'PDF' | 'Data';
+
+export type AuriaGalleryItem = {
+  id: string;
+  name: string;
+  type: AuriaGalleryCategory;
+  accent: string;
+  text: string;
+  modifiedLabel: string;
+  sizeLabel: string;
+  source: string;
+};
+
+export const auriaGalleryItems: AuriaGalleryItem[] = [
+  {
+    id: 'g1',
+    name: 'Q1 Strategy Brief.pdf',
+    type: 'PDF',
+    accent: contentColors.gallery.pdf.surface,
+    text: contentColors.gallery.pdf.text,
+    modifiedLabel: 'Updated 1 hour ago',
+    sizeLabel: '2.4 MB',
+    source: 'Strategy chat',
+  },
+  {
+    id: 'g2',
+    name: 'Team photo - Lisbon offsite.jpg',
+    type: 'Image',
+    accent: contentColors.gallery.imageBlue.surface,
+    text: contentColors.gallery.imageBlue.text,
+    modifiedLabel: 'Updated yesterday',
+    sizeLabel: '4.8 MB',
+    source: 'People workspace',
+  },
+  {
+    id: 'g3',
+    name: 'Customer interview notes.md',
+    type: 'Document',
+    accent: contentColors.gallery.document.surface,
+    text: contentColors.gallery.document.text,
+    modifiedLabel: 'Updated 2 days ago',
+    sizeLabel: '84 KB',
+    source: 'Research chat',
+  },
+  {
+    id: 'g4',
+    name: 'Pipeline export.csv',
+    type: 'Spreadsheet',
+    accent: contentColors.gallery.data.surface,
+    text: contentColors.gallery.data.text,
+    modifiedLabel: 'Updated 3 days ago',
+    sizeLabel: '1.1 MB',
+    source: 'Sales workspace',
+  },
+  {
+    id: 'g5',
+    name: 'Brand moodboard.png',
+    type: 'Image',
+    accent: contentColors.gallery.imageGold.surface,
+    text: contentColors.gallery.imageGold.text,
+    modifiedLabel: 'Updated last week',
+    sizeLabel: '6.2 MB',
+    source: 'Brand project',
+  },
+  {
+    id: 'g6',
+    name: 'Board memo.pdf',
+    type: 'PDF',
+    accent: contentColors.gallery.pdf.surface,
+    text: contentColors.gallery.pdf.text,
+    modifiedLabel: 'Updated last week',
+    sizeLabel: '940 KB',
+    source: 'Board update chat',
+  },
+];
 
 export const auriaRecentSearches = [
   'Legal contract review',
@@ -110,7 +193,7 @@ export const auriaSearchResults = {
     { id: 'f-sales', name: 'Sales team', meta: '5 files · 4 chats' },
   ],
   files: [
-    { id: 'file1', name: 'Board memo.pdf', meta: 'Updated 1h ago' },
+    { id: 'file1', name: 'Board memo.pdf', meta: 'Updated 1 hour ago' },
     { id: 'file2', name: 'Team photo.jpg', meta: 'Updated yesterday' },
   ],
 } as const;
@@ -121,9 +204,9 @@ export const auriaProjects: AuriaProject[] = [
     name: 'Finance team',
     owner: 'Finance team',
     emoji: '$',
-    accent: '#1565C0',
-    visibility: 'Team' as const,
-    updatedLabel: 'Updated 2h ago',
+    accent: contentColors.project[0],
+    visibility: 'Team',
+    updatedLabel: 'Updated 2 hours ago',
     fileCount: 8,
     chatCount: 3,
   },
@@ -132,8 +215,8 @@ export const auriaProjects: AuriaProject[] = [
     name: 'Delivery team',
     owner: 'Delivery team',
     emoji: 'P',
-    accent: '#2E7D32',
-    visibility: 'Team' as const,
+    accent: contentColors.project[1],
+    visibility: 'Team',
     updatedLabel: 'Updated yesterday',
     fileCount: 12,
     chatCount: 5,
@@ -143,9 +226,9 @@ export const auriaProjects: AuriaProject[] = [
     name: 'Sales team',
     owner: 'Sales team',
     emoji: 'S',
-    accent: '#E65100',
-    visibility: 'Team' as const,
-    updatedLabel: 'Updated 4h ago',
+    accent: contentColors.project[2],
+    visibility: 'Team',
+    updatedLabel: 'Updated 4 hours ago',
     fileCount: 6,
     chatCount: 2,
   },
@@ -154,16 +237,16 @@ export const auriaProjects: AuriaProject[] = [
     name: 'Legal team',
     owner: 'Legal team',
     emoji: 'L',
-    accent: '#00838F',
-    visibility: 'Shared' as const,
+    accent: contentColors.project[3],
+    visibility: 'Shared',
     updatedLabel: 'Updated last week',
     fileCount: 4,
     chatCount: 1,
   },
-] as const;
+];
 
 export const auriaConversations = [
-  { id: 'h1', title: 'Refação Termos de Serviço', pinned: true },
+  { id: 'h1', title: 'Rewrite Terms of Service', pinned: true },
   { id: 'h2', title: 'Summarize Q2 pipeline', pinned: false },
   { id: 'h3', title: 'Draft board update', pinned: false },
   { id: 'h4', title: 'Customer onboarding plan', pinned: false },
@@ -171,9 +254,9 @@ export const auriaConversations = [
 ] as const;
 
 export const auriaSidebarProjects: AuriaSidebarProjectRow[] = [
-  { id: 'new', name: 'New project', kind: 'new' as const },
-  { id: 'f-finance', name: 'Finance team', kind: 'folder' as const },
-  { id: 'f-sales', name: 'Sales team', kind: 'folder' as const },
-  { id: 'f-legal', name: 'Legal team', kind: 'folder' as const },
-  { id: 'more', name: 'See more', kind: 'more' as const },
-] as const;
+  { id: 'new', name: 'New project', kind: 'new' },
+  { id: 'f-finance', name: 'Finance team', kind: 'folder' },
+  { id: 'f-sales', name: 'Sales team', kind: 'folder' },
+  { id: 'f-legal', name: 'Legal team', kind: 'folder' },
+  { id: 'more', name: 'See more', kind: 'more' },
+];

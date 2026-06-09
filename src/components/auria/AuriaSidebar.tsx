@@ -17,8 +17,7 @@ import {
   AURIA_ICON_STROKE_STRONG,
   type AuriaIconName,
 } from '../icons';
-import { useTheme } from '../../theme';
-import { auriaGlassBorder, auriaGlassTokens } from './auriaGlass';
+import { auriaTypography, liquidGlassBorder, liquidGlassTokens, useTheme } from '../../theme';
 import { AuriaLogoMark } from './AuriaLogoMark';
 
 type AuriaSidebarProps = {
@@ -69,6 +68,7 @@ function SidebarRow({
         pressed && styles.rowPressed,
       ]}
       onPress={onPress}
+      accessibilityRole="button"
       accessibilityLabel={accessibilityLabel ?? label}
       accessibilityState={{ selected: active }}
     >
@@ -188,8 +188,9 @@ export function AuriaSidebar({
       style={[
         styles.drawerShell,
         revealProgress ? { opacity: revealProgress } : { opacity: open ? 1 : 0 },
+        { pointerEvents: open ? 'auto' : 'none' },
       ]}
-      pointerEvents={open ? 'auto' : 'none'}
+      aria-hidden={!open}
       accessibilityElementsHidden={!open}
       importantForAccessibility={open ? 'auto' : 'no-hide-descendants'}
     >
@@ -210,7 +211,7 @@ export function AuriaSidebar({
               pressed && styles.headerActionBtnPressed,
             ]}
             onPress={() => onSelectPanel('search')}
-            accessibilityLabel="Pesquisar"
+            accessibilityLabel="Search"
           >
             <AuriaIcon
               name="search"
@@ -221,7 +222,7 @@ export function AuriaSidebar({
           </Pressable>
           <Pressable
             style={({ pressed }) => [styles.profileBtn, pressed && styles.profileBtnPressed]}
-            accessibilityLabel="Perfil"
+            accessibilityLabel="Profile"
           >
             <Text style={styles.profileInitials}>{auriaProfileInitials}</Text>
           </Pressable>
@@ -339,9 +340,8 @@ function createStyles(
   drawerWidth: number,
 ) {
   const rowActiveBorder = {} as const;
-  const glass = auriaGlassTokens(theme.mode);
-  const rim = auriaGlassBorder(theme.mode);
-  const rimSubtle = auriaGlassBorder(theme.mode, true);
+  const glass = liquidGlassTokens(theme);
+  const rimSubtle = liquidGlassBorder(theme, true);
 
   return StyleSheet.create({
     drawerShell: {
@@ -379,6 +379,7 @@ function createStyles(
       gap: 10,
     },
     brand: {
+      ...auriaTypography.title,
       fontSize: 18,
       fontWeight: theme.typography.fontWeight.bold,
       color: ds.auriaBlue,
@@ -422,6 +423,7 @@ function createStyles(
       transform: [{ scale: 0.96 }],
     },
     profileInitials: {
+      ...auriaTypography.label,
       fontSize: 11,
       fontWeight: theme.typography.fontWeight.bold,
       color: ds.white,
@@ -435,6 +437,7 @@ function createStyles(
       paddingBottom: theme.spacing.xl,
     },
     sectionTitle: {
+      ...auriaTypography.label,
       fontSize: 11,
       fontWeight: theme.typography.fontWeight.semibold,
       color: ds.gray500,
@@ -468,6 +471,7 @@ function createStyles(
       justifyContent: 'center',
     },
     rowLabel: {
+      ...auriaTypography.body,
       flex: 1,
       fontSize: 13,
       fontWeight: theme.typography.fontWeight.medium,

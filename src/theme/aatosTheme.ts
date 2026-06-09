@@ -1,4 +1,4 @@
-import { ViewStyle } from 'react-native';
+import { Platform, ViewStyle } from 'react-native';
 import { radius, spacing } from './spacing';
 import { typography } from './typography';
 
@@ -38,6 +38,13 @@ export type ThemeColors = {
   offBlackSoft: string;
   offBlackOverlay: string;
   auriaBlue: string;
+  glassFill: string;
+  glassFillStrong: string;
+  glassInputFill: string;
+  glassTint: string;
+  glassBorder: string;
+  glassBorderSubtle: string;
+  glassPressed: string;
 };
 
 export type ThemeShadows = {
@@ -89,6 +96,13 @@ const lightColors: ThemeColors = {
   offBlackSoft: '#393833',
   offBlackOverlay: 'rgba(37, 43, 47, 0.52)',
   auriaBlue: '#2B7CD8',
+  glassFill: 'rgba(255, 255, 255, 0.72)',
+  glassFillStrong: 'rgba(255, 255, 255, 0.88)',
+  glassInputFill: 'rgba(255, 255, 255, 0.62)',
+  glassTint: 'rgba(255, 255, 255, 0.82)',
+  glassBorder: 'rgba(21, 25, 28, 0.14)',
+  glassBorderSubtle: 'rgba(21, 25, 28, 0.09)',
+  glassPressed: 'rgba(21, 25, 28, 0.07)',
 };
 
 const darkColors: ThemeColors = {
@@ -125,54 +139,101 @@ const darkColors: ThemeColors = {
   offBlackSoft: '#8E9099',
   offBlackOverlay: 'rgba(10, 12, 16, 0.62)',
   auriaBlue: '#6BA8FF',
+  glassFill: 'rgba(36, 40, 48, 0.62)',
+  glassFillStrong: 'rgba(36, 40, 48, 0.78)',
+  glassInputFill: 'rgba(255, 255, 255, 0.14)',
+  glassTint: 'rgba(36, 40, 48, 0.72)',
+  glassBorder: 'rgba(255, 255, 255, 0.28)',
+  glassBorderSubtle: 'rgba(255, 255, 255, 0.16)',
+  glassPressed: 'rgba(255, 255, 255, 0.12)',
 };
 
+/** Fixed content accents. Components resolve all non-semantic color through this global palette. */
+export const contentColors = {
+  project: ['#1565C0', '#2E7D32', '#E65100', '#00838F', '#6A1B9A'] as const,
+  news: ['#5B7C99', '#6B7280', '#78716C', '#57534E'] as const,
+  gallery: {
+    pdf: { surface: '#FEE2E2', text: '#B91C1C' },
+    imageBlue: { surface: '#DBEAFE', text: '#1D4ED8' },
+    document: { surface: '#F3F4F6', text: '#374151' },
+    data: { surface: '#ECFDF5', text: '#047857' },
+    imageGold: { surface: '#FEF3C7', text: '#B45309' },
+  },
+  chartBlue: {
+    light: '#2563EB',
+    dark: '#6BA8FF',
+  },
+  black: '#000000',
+} as const;
+
+function platformShadow(native: ViewStyle, boxShadow: string): ViewStyle {
+  return Platform.OS === 'web' ? ({ boxShadow } as ViewStyle) : native;
+}
+
 const lightShadow: ThemeShadows = {
-  card: {
-    shadowColor: '#252B2F',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.06,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  navActive: {
-    shadowColor: '#252B2F',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  heroSearch: {
-    shadowColor: '#252B2F',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.06,
-    shadowRadius: 4,
-    elevation: 2,
-  },
+  card: platformShadow(
+    {
+      shadowColor: '#252B2F',
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.06,
+      shadowRadius: 4,
+      elevation: 2,
+    },
+    '0 1px 4px rgba(37, 43, 47, 0.06)',
+  ),
+  navActive: platformShadow(
+    {
+      shadowColor: '#252B2F',
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.1,
+      shadowRadius: 4,
+      elevation: 2,
+    },
+    '0 1px 4px rgba(37, 43, 47, 0.1)',
+  ),
+  heroSearch: platformShadow(
+    {
+      shadowColor: '#252B2F',
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.06,
+      shadowRadius: 4,
+      elevation: 2,
+    },
+    '0 1px 4px rgba(37, 43, 47, 0.06)',
+  ),
 };
 
 const darkShadow: ThemeShadows = {
-  card: {
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.28,
-    shadowRadius: 6,
-    elevation: 3,
-  },
-  navActive: {
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.35,
-    shadowRadius: 6,
-    elevation: 4,
-  },
-  heroSearch: {
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 5,
-    elevation: 3,
-  },
+  card: platformShadow(
+    {
+      shadowColor: '#000000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.28,
+      shadowRadius: 6,
+      elevation: 3,
+    },
+    '0 2px 6px rgba(0, 0, 0, 0.28)',
+  ),
+  navActive: platformShadow(
+    {
+      shadowColor: '#000000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.35,
+      shadowRadius: 6,
+      elevation: 4,
+    },
+    '0 2px 6px rgba(0, 0, 0, 0.35)',
+  ),
+  heroSearch: platformShadow(
+    {
+      shadowColor: '#000000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.25,
+      shadowRadius: 5,
+      elevation: 3,
+    },
+    '0 2px 5px rgba(0, 0, 0, 0.25)',
+  ),
 };
 
 export const lightTheme: AatosTheme = {

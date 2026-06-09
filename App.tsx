@@ -18,11 +18,11 @@ function renderProductScreen(tab: ProductTabId) {
     case 'auria':
       return <AuriaScreen />;
     case 'tasks':
-      return <PlaceholderModuleScreen title="Tasks" subtitle="Kanban, roadmap e workload" />;
+      return <PlaceholderModuleScreen title="Tasks" subtitle="Kanban, roadmap, and workload" />;
     case 'specialists':
-      return <PlaceholderModuleScreen title="Specialists" subtitle="Chat com profissionais" />;
+      return <PlaceholderModuleScreen title="Specialists" subtitle="Chat with professionals" />;
     case 'integrations':
-      return <PlaceholderModuleScreen title="Integrations" subtitle="Mail, calendar e conectores" />;
+      return <PlaceholderModuleScreen title="Integrations" subtitle="Mail, calendar, and connectors" />;
     default:
       return null;
   }

@@ -13,7 +13,7 @@ type AuriaRefreshButtonProps = {
 
 export function AuriaRefreshButton({
   onPress,
-  accessibilityLabel = 'Actualizar sugestões',
+  accessibilityLabel = 'Refresh suggestions',
 }: AuriaRefreshButtonProps) {
   const { ds } = useTheme();
   const styles = useMemo(() => createStyles(), []);

@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { companyInsight, companyKpis, activitySeries } from '../../data/insightsMockData';
-import { useTheme } from '../../theme';
+import { contentColors, useTheme } from '../../theme';
 import { MiniBarChart } from './MiniBarChart';
 
 export function InsightsKpiGrid() {
@@ -49,7 +49,11 @@ export function InsightsActivityCard() {
     <View style={styles.widgetCard}>
       <Text style={styles.widgetTitle}>Overall activity trend</Text>
       <Text style={styles.widgetSubtitle}>Aggregate index · recent months</Text>
-      <MiniBarChart data={activitySeries} barColor={theme.mode === 'dark' ? '#6BA8FF' : '#2563EB'} maxHeight={72} />
+      <MiniBarChart
+        data={activitySeries}
+        barColor={contentColors.chartBlue[theme.mode]}
+        maxHeight={72}
+      />
     </View>
   );
 }

@@ -14,7 +14,7 @@ import {
 import { AuriaProjectVisibility, auriaWorkspaceName } from '../../data/auriaMockData';
 import { AuriaGlassButton } from './AuriaGlassButton';
 import { LiquidGlassSurface } from '../ui/LiquidGlassSurface';
-import { useTheme } from '../../theme';
+import { auriaTypography, useTheme } from '../../theme';
 
 export type AuriaNewProjectInput = {
   name: string;
@@ -89,6 +89,7 @@ export function AuriaNewProjectModal({ visible, onClose, onCreate }: AuriaNewPro
                 key={option}
                 style={styles.chipActive}
                 onPress={() => setVisibility(option)}
+                accessibilityRole="button"
               >
                 <Text style={styles.chipTextActive}>{option}</Text>
               </Pressable>
@@ -123,6 +124,7 @@ export function AuriaNewProjectModal({ visible, onClose, onCreate }: AuriaNewPro
           style={[styles.createButton, !canCreate && styles.createButtonDisabled]}
           onPress={handleCreate}
           disabled={!canCreate}
+          accessibilityRole="button"
         >
           <Text style={styles.createText}>Create project</Text>
         </Pressable>
@@ -151,7 +153,12 @@ export function AuriaNewProjectModal({ visible, onClose, onCreate }: AuriaNewPro
           style={styles.overlay}
           behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         >
-          <Pressable style={styles.backdrop} onPress={onClose} accessibilityLabel="Fechar" />
+          <Pressable
+            style={styles.backdrop}
+            onPress={onClose}
+            accessibilityRole="button"
+            accessibilityLabel="Close"
+          />
           <LiquidGlassSurface
             elevated
             elevationLevel="modal"
@@ -178,7 +185,7 @@ function createStyles(
     },
     backdrop: {
       ...StyleSheet.absoluteFillObject,
-      backgroundColor: 'rgba(37, 43, 47, 0.42)',
+      backgroundColor: theme.colors.offBlackOverlay,
     },
     iosSheet: {
       paddingHorizontal: 20,
@@ -191,24 +198,28 @@ function createStyles(
       gap: 12,
     },
     title: {
+      ...auriaTypography.title,
       fontSize: 18,
       fontWeight: theme.typography.fontWeight.bold,
       color: ds.gray900,
       letterSpacing: -0.2,
     },
     subtitle: {
+      ...auriaTypography.body,
       fontSize: 13,
       lineHeight: 18,
       color: ds.gray500,
       marginTop: -4,
     },
     label: {
+      ...auriaTypography.body,
       fontSize: 13,
       fontWeight: theme.typography.fontWeight.semibold,
       color: ds.gray900,
       marginTop: 4,
     },
     input: {
+      ...auriaTypography.body,
       fontSize: 16,
       fontWeight: theme.typography.fontWeight.medium,
       color: ds.gray900,
@@ -233,16 +244,19 @@ function createStyles(
       backgroundColor: ds.offBlack,
     },
     chipText: {
+      ...auriaTypography.body,
       fontSize: 13,
       fontWeight: theme.typography.fontWeight.semibold,
       color: ds.gray700,
     },
     chipTextActive: {
+      ...auriaTypography.body,
       color: ds.white,
       fontSize: 13,
       fontWeight: theme.typography.fontWeight.semibold,
     },
     companyHint: {
+      ...auriaTypography.body,
       fontSize: 12,
       lineHeight: 17,
       color: ds.gray500,
@@ -258,6 +272,7 @@ function createStyles(
       paddingVertical: 10,
     },
     cancelText: {
+      ...auriaTypography.body,
       fontSize: 13,
       fontWeight: theme.typography.fontWeight.semibold,
       color: ds.gray700,
@@ -272,6 +287,7 @@ function createStyles(
       opacity: 0.45,
     },
     createText: {
+      ...auriaTypography.body,
       fontSize: 13,
       fontWeight: theme.typography.fontWeight.semibold,
       color: ds.white,

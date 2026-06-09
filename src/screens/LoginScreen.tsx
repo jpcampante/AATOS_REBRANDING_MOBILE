@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { DS, hairlineBorder } from '../theme/auriaDesignTokens';
+import { useTheme } from '../theme';
 
 type Tab = 'login' | 'register';
 
@@ -22,6 +22,8 @@ type LoginScreenProps = {
 };
 
 export function LoginScreen({ onBack, onContinue }: LoginScreenProps) {
+  const { theme } = useTheme();
+  const styles = useMemo(() => createStyles(theme), [theme]);
   const [tab, setTab] = useState<Tab>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -35,29 +37,29 @@ export function LoginScreen({ onBack, onContinue }: LoginScreenProps) {
     setLoading(true);
     await new Promise((resolve) => setTimeout(resolve, 600));
     setLoading(false);
-    setSuccess(tab === 'login' ? 'Entrada simulada. A redirecionar…' : 'Conta simulada criada. A redirecionar…');
+    setSuccess(tab === 'login' ? 'Sign-in simulated. Redirecting...' : 'Account created. Redirecting...');
     setTimeout(onContinue, 700);
   };
 
   return (
     <SafeAreaView style={styles.safe}>
-      <StatusBar style="dark" />
+      <StatusBar style={theme.colors.statusBar} />
       <KeyboardAvoidingView
         style={styles.flex}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
         <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
-          <Pressable onPress={onBack} style={styles.backButton}>
-            <Text style={styles.backButtonText}>← Voltar</Text>
+          <Pressable onPress={onBack} style={styles.backButton} accessibilityRole="button">
+            <Text style={styles.backButtonText}>{'\u2190 Back'}</Text>
           </Pressable>
 
           <View style={styles.card}>
             <View style={styles.header}>
               <View style={styles.logoBox}>
-                <Text style={styles.logoEmoji}>📋</Text>
+                <Text style={styles.logoEmoji}>{'\uD83D\uDCCB'}</Text>
               </View>
               <Text style={styles.title}>AATOS</Text>
-              <Text style={styles.subtitle}>Gestão de projectos</Text>
+              <Text style={styles.subtitle}>Project management</Text>
             </View>
 
             <View style={styles.tabRow}>
@@ -71,35 +73,37 @@ export function LoginScreen({ onBack, onContinue }: LoginScreenProps) {
                       setTab(value);
                       setSuccess(null);
                     }}
+                    accessibilityRole="button"
+                    accessibilityState={{ selected: active }}
                   >
                     <Text style={[styles.tabButtonText, active && styles.tabButtonTextActive]}>
-                      {value === 'login' ? 'Entrar' : 'Registar'}
+                      {value === 'login' ? 'Sign in' : 'Register'}
                     </Text>
                   </Pressable>
                 );
               })}
             </View>
 
-            {tab === 'register' && (
+            {tab === 'register' ? (
               <View style={styles.field}>
-                <Text style={styles.label}>Nome completo</Text>
+                <Text style={styles.label}>Full name</Text>
                 <TextInput
                   value={fullName}
                   onChangeText={setFullName}
-                  placeholder="João Silva"
-                  placeholderTextColor={DS.gray400}
+                  placeholder="Jane Smith"
+                  placeholderTextColor={theme.colors.textHint}
                   style={styles.input}
                 />
               </View>
-            )}
+            ) : null}
 
             <View style={styles.field}>
               <Text style={styles.label}>Email</Text>
               <TextInput
                 value={email}
                 onChangeText={setEmail}
-                placeholder="joao@empresa.com"
-                placeholderTextColor={DS.gray400}
+                placeholder="jane@company.com"
+                placeholderTextColor={theme.colors.textHint}
                 keyboardType="email-address"
                 autoCapitalize="none"
                 style={styles.input}
@@ -112,13 +116,18 @@ export function LoginScreen({ onBack, onContinue }: LoginScreenProps) {
                 <TextInput
                   value={password}
                   onChangeText={setPassword}
-                  placeholder="••••••••"
-                  placeholderTextColor={DS.gray400}
+                  placeholder={'\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022'}
+                  placeholderTextColor={theme.colors.textHint}
                   secureTextEntry={!showPassword}
                   style={[styles.input, styles.passwordInput]}
                 />
-                <Pressable style={styles.eyeButton} onPress={() => setShowPassword((value) => !value)}>
-                  <Text style={styles.eyeButtonText}>{showPassword ? '🙈' : '👁'}</Text>
+                <Pressable
+                  style={styles.eyeButton}
+                  onPress={() => setShowPassword((value) => !value)}
+                  accessibilityRole="button"
+                  accessibilityLabel={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  <Text style={styles.eyeButtonText}>{showPassword ? '\u25CF' : '\u25CB'}</Text>
                 </Pressable>
               </View>
             </View>
@@ -133,22 +142,23 @@ export function LoginScreen({ onBack, onContinue }: LoginScreenProps) {
               style={[styles.submitButton, loading && styles.submitButtonDisabled]}
               onPress={handleSubmit}
               disabled={loading}
+              accessibilityRole="button"
             >
               {loading ? (
-                <ActivityIndicator color={DS.white} />
+                <ActivityIndicator color={theme.colors.surface} />
               ) : (
                 <Text style={styles.submitButtonText}>
-                  {tab === 'login' ? 'Entrar' : 'Criar conta'}
+                  {tab === 'login' ? 'Sign in' : 'Create account'}
                 </Text>
               )}
             </Pressable>
 
-            <Pressable onPress={onContinue}>
-              <Text style={styles.skipText}>Continuar sem login (modo offline)</Text>
+            <Pressable onPress={onContinue} accessibilityRole="button">
+              <Text style={styles.skipText}>Continue without signing in (offline mode)</Text>
             </Pressable>
 
             <Text style={styles.noteText}>
-              Sem autenticação por agora — os botões apenas simulam a UI.
+              Authentication is not connected yet. These controls currently simulate the UI.
             </Text>
           </View>
         </ScrollView>
@@ -157,159 +167,93 @@ export function LoginScreen({ onBack, onContinue }: LoginScreenProps) {
   );
 }
 
-const styles = StyleSheet.create({
-  safe: {
-    flex: 1,
-    backgroundColor: DS.pageSurface,
-  },
-  flex: {
-    flex: 1,
-  },
-  scroll: {
-    flexGrow: 1,
-    justifyContent: 'center',
-    padding: 20,
-  },
-  backButton: {
-    alignSelf: 'flex-start',
-    marginBottom: 16,
-    paddingVertical: 8,
-  },
-  backButtonText: {
-    color: DS.gray600,
-    fontSize: 15,
-    fontWeight: '600',
-  },
-  card: {
-    backgroundColor: DS.white,
-    borderRadius: 20,
-    padding: 24,
-    gap: 16,
-    ...hairlineBorder,
-  },
-  header: {
-    alignItems: 'center',
-  },
-  logoBox: {
-    width: 56,
-    height: 56,
-    borderRadius: 16,
-    backgroundColor: DS.inputFill,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 12,
-    ...hairlineBorder,
-  },
-  logoEmoji: {
-    fontSize: 24,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: '800',
-    color: DS.gray900,
-  },
-  subtitle: {
-    fontSize: 13,
-    color: DS.gray500,
-    marginTop: 4,
-  },
-  tabRow: {
-    flexDirection: 'row',
-    backgroundColor: DS.inputFill,
-    borderRadius: 14,
-    padding: 4,
-    gap: 4,
-    ...hairlineBorder,
-  },
-  tabButton: {
-    flex: 1,
-    borderRadius: 10,
-    paddingVertical: 10,
-    alignItems: 'center',
-  },
-  tabButtonActive: {
-    backgroundColor: DS.white,
-    ...hairlineBorder,
-  },
-  tabButtonText: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: DS.gray500,
-  },
-  tabButtonTextActive: {
-    color: DS.gray900,
-  },
-  field: {
-    gap: 6,
-  },
-  label: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: DS.gray600,
-  },
-  input: {
-    backgroundColor: DS.inputFill,
-    borderWidth: 1,
-    borderColor: DS.gray300,
-    borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    color: DS.gray900,
-    fontSize: 15,
-  },
-  passwordRow: {
-    position: 'relative',
-  },
-  passwordInput: {
-    paddingRight: 48,
-  },
-  eyeButton: {
-    position: 'absolute',
-    right: 12,
-    top: 10,
-    padding: 4,
-  },
-  eyeButtonText: {
-    fontSize: 16,
-  },
-  successBox: {
-    backgroundColor: DS.sectionFill,
-    borderWidth: 1,
-    borderColor: DS.gray200,
-    borderRadius: 10,
-    padding: 12,
-  },
-  successText: {
-    color: DS.positive,
-    fontSize: 13,
-    lineHeight: 18,
-  },
-  submitButton: {
-    backgroundColor: DS.btnPrimary,
-    borderRadius: 14,
-    paddingVertical: 14,
-    alignItems: 'center',
-    marginTop: 4,
-    ...hairlineBorder,
-  },
-  submitButtonDisabled: {
-    opacity: 0.7,
-  },
-  submitButtonText: {
-    color: DS.white,
-    fontSize: 15,
-    fontWeight: '700',
-  },
-  skipText: {
-    textAlign: 'center',
-    color: DS.gray500,
-    fontSize: 12,
-    textDecorationLine: 'underline',
-  },
-  noteText: {
-    textAlign: 'center',
-    color: DS.gray400,
-    fontSize: 11,
-    lineHeight: 16,
-  },
-});
+function createStyles(theme: ReturnType<typeof useTheme>['theme']) {
+  const { colors } = theme;
+  const border = { borderWidth: 1, borderColor: colors.border } as const;
+  return StyleSheet.create({
+    safe: { flex: 1, backgroundColor: colors.page },
+    flex: { flex: 1 },
+    scroll: { flexGrow: 1, justifyContent: 'center', padding: 20 },
+    backButton: { alignSelf: 'flex-start', marginBottom: 16, paddingVertical: 8 },
+    backButtonText: { color: colors.textSecondary, fontSize: 15, fontWeight: '600' },
+    card: {
+      backgroundColor: colors.surface,
+      borderRadius: 20,
+      padding: 24,
+      gap: 16,
+      ...border,
+    },
+    header: { alignItems: 'center' },
+    logoBox: {
+      width: 56,
+      height: 56,
+      borderRadius: 16,
+      backgroundColor: colors.input,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginBottom: 12,
+      ...border,
+    },
+    logoEmoji: { fontSize: 24 },
+    title: { fontSize: 24, fontWeight: '800', color: colors.text },
+    subtitle: { fontSize: 13, color: colors.textTertiary, marginTop: 4 },
+    tabRow: {
+      flexDirection: 'row',
+      backgroundColor: colors.input,
+      borderRadius: 14,
+      padding: 4,
+      gap: 4,
+      ...border,
+    },
+    tabButton: { flex: 1, borderRadius: 10, paddingVertical: 10, alignItems: 'center' },
+    tabButtonActive: { backgroundColor: colors.surface, ...border },
+    tabButtonText: { fontSize: 13, fontWeight: '700', color: colors.textTertiary },
+    tabButtonTextActive: { color: colors.text },
+    field: { gap: 6 },
+    label: { fontSize: 12, fontWeight: '700', color: colors.textSecondary },
+    input: {
+      backgroundColor: colors.input,
+      borderWidth: 1,
+      borderColor: colors.borderInput,
+      borderRadius: 10,
+      paddingHorizontal: 14,
+      paddingVertical: 12,
+      color: colors.text,
+      fontSize: 15,
+    },
+    passwordRow: { position: 'relative' },
+    passwordInput: { paddingRight: 48 },
+    eyeButton: { position: 'absolute', right: 12, top: 10, padding: 4 },
+    eyeButtonText: { fontSize: 16, color: colors.textSecondary },
+    successBox: {
+      backgroundColor: colors.hover,
+      borderWidth: 1,
+      borderColor: colors.divider,
+      borderRadius: 10,
+      padding: 12,
+    },
+    successText: { color: colors.success, fontSize: 13, lineHeight: 18 },
+    submitButton: {
+      backgroundColor: colors.accent,
+      borderRadius: 14,
+      paddingVertical: 14,
+      alignItems: 'center',
+      marginTop: 4,
+      ...border,
+    },
+    submitButtonDisabled: { opacity: 0.7 },
+    submitButtonText: { color: colors.surface, fontSize: 15, fontWeight: '700' },
+    skipText: {
+      textAlign: 'center',
+      color: colors.textTertiary,
+      fontSize: 12,
+      textDecorationLine: 'underline',
+    },
+    noteText: {
+      textAlign: 'center',
+      color: colors.textHint,
+      fontSize: 11,
+      lineHeight: 16,
+    },
+  });
+}

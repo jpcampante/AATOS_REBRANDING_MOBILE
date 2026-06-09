@@ -2,20 +2,20 @@ export const welcomeContent = {
   brand: 'AATOS',
   title: 'Welcome to AATOS',
   description:
-    'One platform to run your business — metrics, AI, work, sales, professionals, and integrations in a shared workspace with consistent context.',
+    'One platform to run your business - metrics, AI, work, sales, professionals, and integrations in a shared workspace with consistent context.',
   features: [
     {
-      emoji: '✨',
+      emoji: '\u2728',
       label: 'One workspace',
       desc: 'Shared data and identity',
     },
     {
-      emoji: '⚡',
+      emoji: '\u26A1',
       label: 'Auria everywhere',
       desc: 'Assistant and floating chat',
     },
     {
-      emoji: '🧭',
+      emoji: '\uD83E\uDDED',
       label: 'Guided tour',
       desc: 'Same Hello card on every module',
     },

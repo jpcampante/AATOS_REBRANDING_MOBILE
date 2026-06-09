@@ -80,11 +80,12 @@ export function LiquidGlassSurface({
   const nativeGlassStyle = useInteractiveGlass ? 'clear' : 'regular';
 
   const fallbackStyle = useMemo(() => {
+    const iosFallback = Platform.OS === 'ios';
     if (variant === 'input') {
       return {
         borderRadius: radius,
         overflow: 'hidden' as const,
-        backgroundColor: glass.inputFill,
+        backgroundColor: iosFallback ? 'rgba(255, 255, 255, 0.38)' : glass.inputFill,
         ...rim,
         ...glass.inputWebBlur,
       };
@@ -93,7 +94,13 @@ export function LiquidGlassSurface({
     return {
       borderRadius: radius,
       overflow: 'hidden' as const,
-      backgroundColor: strong ? glass.fillStrong : glass.fill,
+      backgroundColor: iosFallback
+        ? strong
+          ? 'rgba(255, 255, 255, 0.5)'
+          : 'rgba(255, 255, 255, 0.32)'
+        : strong
+          ? glass.fillStrong
+          : glass.fill,
       ...rim,
       ...glass.webBlur,
     };

@@ -56,6 +56,7 @@ export function liquidGlassTokens(theme: AatosTheme): LiquidGlassTokens {
 }
 
 export function liquidGlassBorder(theme: AatosTheme, subtle = false): ViewStyle {
+  if (Platform.OS === 'ios') return {};
   return {
     borderWidth: 1,
     borderColor: subtle ? theme.colors.glassBorderSubtle : theme.colors.glassBorder,
@@ -66,7 +67,7 @@ export function liquidGlassElevation(
   theme: AatosTheme,
   level: LiquidGlassElevation = 'dock',
 ): ViewStyle {
-  if (Platform.OS === 'web') {
+  if (Platform.OS === 'web' || Platform.OS === 'ios') {
     return {};
   }
 

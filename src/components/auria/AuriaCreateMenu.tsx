@@ -127,16 +127,132 @@ export function AuriaCreateMenu({ visible, onClose, onSendRequest }: AuriaCreate
           ? 'Create image'
           : 'Talk to teammate AI';
 
+  const menuBody = (
+    <>
+      <View style={styles.header}>
+        {mode !== 'home' ? (
+          <Pressable
+            onPress={() => setMode('home')}
+            style={styles.headerButton}
+            accessibilityRole="button"
+            accessibilityLabel="Back"
+          >
+            <AuriaIcon name="arrowLeft" size={AURIA_ICON_SIZE.sm} />
+          </Pressable>
+        ) : (
+          <View style={styles.headerButton} />
+        )}
+        <Text style={styles.title}>{title}</Text>
+        <Pressable
+          onPress={onClose}
+          style={styles.headerButton}
+          accessibilityRole="button"
+          accessibilityLabel="Close"
+        >
+          <AuriaIcon name="moreHorizontal" size={AURIA_ICON_SIZE.sm} />
+        </Pressable>
+      </View>
+
+      <ScrollView
+        key={mode}
+        style={styles.scroll}
+        contentContainerStyle={styles.scrollContent}
+        keyboardShouldPersistTaps="handled"
+      >
+        {mode === 'home' ? (
+          ACTIONS.map((action) => (
+            <Pressable
+              key={action.id}
+              onPress={() => openAction(action.id)}
+              style={({ pressed }) => [styles.actionRow, pressed && styles.pressed]}
+              accessibilityRole="button"
+            >
+              <LiquidGlassSurface
+                interactive
+                elevated={false}
+                borderRadius={theme.radius.md}
+                style={styles.actionIcon}
+              >
+                <AuriaIcon name={action.icon} size={AURIA_ICON_SIZE.md} />
+              </LiquidGlassSurface>
+              <View style={styles.actionCopy}>
+                <Text style={styles.actionTitle}>{action.label}</Text>
+                <Text style={styles.actionDescription}>{action.description}</Text>
+              </View>
+            </Pressable>
+          ))
+        ) : (
+          <>
+            {mode === 'document' ? (
+              <>
+                <OptionSection label="Format" options={DOCUMENT_TYPES} value={documentType} onChange={setDocumentType} />
+                <OptionSection label="Action" options={DOCUMENT_TASKS} value={documentTask} onChange={setDocumentTask} />
+              </>
+            ) : null}
+            {mode === 'image' ? (
+              <OptionSection label="Proportion" options={IMAGE_RATIOS} value={imageRatio} onChange={setImageRatio} />
+            ) : null}
+            {mode === 'teammate' ? (
+              <View style={styles.section}>
+                <Text style={styles.sectionLabel}>Employee AI</Text>
+                {TEAMMATES.map((person) => {
+                  const active = teammate.name === person.name;
+                  return (
+                    <Pressable
+                      key={person.name}
+                      onPress={() => setTeammate(person)}
+                      style={[styles.personRow, active && styles.personRowActive]}
+                      accessibilityRole="button"
+                      accessibilityState={{ selected: active }}
+                    >
+                      <View style={styles.avatar}>
+                        <Text style={styles.avatarText}>{person.name.split(' ').map((part) => part[0]).join('')}</Text>
+                      </View>
+                      <View style={styles.actionCopy}>
+                        <Text style={styles.actionTitle}>{person.name}</Text>
+                        <Text style={styles.actionDescription}>{person.role} {'\u00B7'} {person.context}</Text>
+                      </View>
+                    </Pressable>
+                  );
+                })}
+              </View>
+            ) : null}
+            <View style={styles.section}>
+              <Text style={styles.sectionLabel}>{mode === 'image' ? 'Describe the image' : 'Brief'}</Text>
+              <LiquidGlassSurface variant="input" interactive elevated={false} borderRadius={theme.radius.md} style={styles.promptSurface}>
+                <TextInput
+                  value={prompt}
+                  onChangeText={setPrompt}
+                  placeholder={mode === 'image' ? 'A minimal campaign image with soft natural light...' : 'Describe what Auria should create or discuss...'}
+                  placeholderTextColor={theme.colors.textHint}
+                  multiline
+                  style={styles.prompt}
+                />
+              </LiquidGlassSurface>
+            </View>
+            <Pressable onPress={submit} style={styles.submit} accessibilityRole="button">
+              <AuriaIcon name="sparkles" color={theme.colors.surface} size={AURIA_ICON_SIZE.sm} />
+              <Text style={styles.submitText}>{mode === 'teammate' ? 'Start conversation' : 'Create'}</Text>
+            </Pressable>
+          </>
+        )}
+      </ScrollView>
+    </>
+  );
+
   return (
     <Modal
       visible={visible}
-      transparent
-      animationType={Platform.OS === 'ios' ? 'none' : 'fade'}
+      transparent={Platform.OS !== 'ios'}
+      animationType={Platform.OS === 'ios' ? 'slide' : 'fade'}
+      presentationStyle={Platform.OS === 'ios' ? 'pageSheet' : 'overFullScreen'}
       onRequestClose={onClose}
     >
+      {Platform.OS === 'ios' ? (
+        <View style={styles.iosSheet}>{menuBody}</View>
+      ) : (
       <KeyboardAvoidingView
         style={styles.overlay}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
         <Pressable
           style={styles.backdrop}
@@ -149,154 +265,10 @@ export function AuriaCreateMenu({ visible, onClose, onSendRequest }: AuriaCreate
           borderRadius={theme.radius.panel}
           style={styles.sheet}
         >
-          <View style={styles.header}>
-            {mode !== 'home' ? (
-              <Pressable
-                onPress={() => setMode('home')}
-                style={styles.headerButton}
-                accessibilityRole="button"
-                accessibilityLabel="Back"
-              >
-                <AuriaIcon name="arrowLeft" size={AURIA_ICON_SIZE.sm} />
-              </Pressable>
-            ) : (
-              <View style={styles.headerButton} />
-            )}
-            <Text style={styles.title}>{title}</Text>
-            <Pressable
-              onPress={onClose}
-              style={styles.headerButton}
-              accessibilityRole="button"
-              accessibilityLabel="Close"
-            >
-              <AuriaIcon name="moreHorizontal" size={AURIA_ICON_SIZE.sm} />
-            </Pressable>
-          </View>
-
-          <ScrollView
-            key={mode}
-            style={styles.scroll}
-            contentContainerStyle={styles.scrollContent}
-            keyboardShouldPersistTaps="handled"
-          >
-            {mode === 'home' ? (
-              ACTIONS.map((action) => (
-                <Pressable
-                  key={action.id}
-                  onPress={() => openAction(action.id)}
-                  style={({ pressed }) => [styles.actionRow, pressed && styles.pressed]}
-                  accessibilityRole="button"
-                >
-                  <View style={styles.actionIcon}>
-                    <AuriaIcon name={action.icon} size={AURIA_ICON_SIZE.md} />
-                  </View>
-                  <View style={styles.actionCopy}>
-                    <Text style={styles.actionTitle}>{action.label}</Text>
-                    <Text style={styles.actionDescription}>{action.description}</Text>
-                  </View>
-                </Pressable>
-              ))
-            ) : (
-              <>
-                {mode === 'document' ? (
-                  <>
-                    <OptionSection
-                      label="Format"
-                      options={DOCUMENT_TYPES}
-                      value={documentType}
-                      onChange={setDocumentType}
-                    />
-                    <OptionSection
-                      label="Action"
-                      options={DOCUMENT_TASKS}
-                      value={documentTask}
-                      onChange={setDocumentTask}
-                    />
-                  </>
-                ) : null}
-
-                {mode === 'image' ? (
-                  <OptionSection
-                    label="Proportion"
-                    options={IMAGE_RATIOS}
-                    value={imageRatio}
-                    onChange={setImageRatio}
-                  />
-                ) : null}
-
-                {mode === 'teammate' ? (
-                  <View style={styles.section}>
-                    <Text style={styles.sectionLabel}>Employee AI</Text>
-                    {TEAMMATES.map((person) => {
-                      const active = teammate.name === person.name;
-                      return (
-                        <Pressable
-                          key={person.name}
-                          onPress={() => setTeammate(person)}
-                          style={[styles.personRow, active && styles.personRowActive]}
-                          accessibilityRole="button"
-                          accessibilityState={{ selected: active }}
-                        >
-                          <View style={styles.avatar}>
-                            <Text style={styles.avatarText}>
-                              {person.name
-                                .split(' ')
-                                .map((part) => part[0])
-                                .join('')}
-                            </Text>
-                          </View>
-                          <View style={styles.actionCopy}>
-                            <Text style={styles.actionTitle}>{person.name}</Text>
-                            <Text style={styles.actionDescription}>
-                              {person.role} {'\u00B7'} {person.context}
-                            </Text>
-                          </View>
-                        </Pressable>
-                      );
-                    })}
-                  </View>
-                ) : null}
-
-                <View style={styles.section}>
-                  <Text style={styles.sectionLabel}>
-                    {mode === 'image' ? 'Describe the image' : 'Brief'}
-                  </Text>
-                  <LiquidGlassSurface
-                    variant="input"
-                    elevated={false}
-                    borderRadius={theme.radius.md}
-                    style={styles.promptSurface}
-                  >
-                    <TextInput
-                      value={prompt}
-                      onChangeText={setPrompt}
-                      placeholder={
-                        mode === 'image'
-                          ? 'A minimal campaign image with soft natural light...'
-                          : 'Describe what Auria should create or discuss...'
-                      }
-                      placeholderTextColor={theme.colors.textHint}
-                      multiline
-                      style={styles.prompt}
-                    />
-                  </LiquidGlassSurface>
-                </View>
-
-                <Pressable onPress={submit} style={styles.submit} accessibilityRole="button">
-                  <AuriaIcon
-                    name="sparkles"
-                    color={theme.colors.surface}
-                    size={AURIA_ICON_SIZE.sm}
-                  />
-                  <Text style={styles.submitText}>
-                    {mode === 'teammate' ? 'Start conversation' : 'Create'}
-                  </Text>
-                </Pressable>
-              </>
-            )}
-          </ScrollView>
+          {menuBody}
         </LiquidGlassSurface>
       </KeyboardAvoidingView>
+      )}
     </Modal>
   );
 }
@@ -344,6 +316,14 @@ function createStyles(theme: ReturnType<typeof useTheme>['theme']) {
       flex: 1,
       justifyContent: 'flex-end',
       padding: 12,
+    },
+    iosSheet: {
+      flex: 1,
+      paddingHorizontal: 18,
+      paddingTop: 18,
+      paddingBottom: 28,
+      gap: 8,
+      backgroundColor: theme.colors.page,
     },
     backdrop: {
       ...StyleSheet.absoluteFillObject,
@@ -398,9 +378,6 @@ function createStyles(theme: ReturnType<typeof useTheme>['theme']) {
       alignItems: 'center',
       justifyContent: 'center',
       borderRadius: theme.radius.md,
-      backgroundColor: glass.fill,
-      borderWidth: 1,
-      borderColor: glass.borderSubtle,
     },
     actionCopy: {
       flex: 1,
@@ -438,7 +415,7 @@ function createStyles(theme: ReturnType<typeof useTheme>['theme']) {
       paddingVertical: 8,
       borderRadius: theme.radius.pill,
       backgroundColor: glass.fill,
-      borderWidth: 1,
+      borderWidth: Platform.OS === 'ios' ? 0 : 1,
       borderColor: glass.borderSubtle,
     },
     chipActive: {
@@ -461,7 +438,7 @@ function createStyles(theme: ReturnType<typeof useTheme>['theme']) {
       gap: 10,
       padding: 10,
       borderRadius: theme.radius.md,
-      borderWidth: 1,
+      borderWidth: Platform.OS === 'ios' ? 0 : 1,
       borderColor: glass.borderSubtle,
     },
     personRowActive: {

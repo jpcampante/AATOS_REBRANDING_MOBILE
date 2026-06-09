@@ -105,7 +105,6 @@ export function ProductNavBar({ activeTab, onTabChange }: ProductNavBarProps) {
           <GlassView
             style={styles.glassBar}
             glassEffectStyle="regular"
-            tintColor={glass?.tintColor}
             colorScheme={nativeScheme}
           >
             <TabRail activeTab={activeTab} onTabChange={onTabChange} glassActiveTab />
@@ -144,7 +143,6 @@ function createStyles(
     },
     glassContainer: {
       borderRadius: radius.panel,
-      overflow: 'hidden',
     },
     glassBar: {
       borderRadius: radius.panel,
@@ -173,7 +171,6 @@ function createStyles(
     },
     glassTabPill: {
       borderRadius: radius.pill,
-      overflow: 'hidden',
     },
     tab: {
       paddingHorizontal: 13,
